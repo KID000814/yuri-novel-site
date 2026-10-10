@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>百合小说分享站 - Yuri小说 · GL小说 · 儿童病例的神秘网站</title>
+  <meta name="description" content="百合小说分享站：Yuri小说、GL小说、百合小说在线观看与免费下载。收录 1922 部已完结百合小说，儿童病例的神秘网站，含日本百合、国内百合等分类，支持搜索与在线阅读。" />
+  <meta name="keywords" content="百合小说,GL小说,Yuri小说,儿童病例,百合小说分享站,百合小说下载,百合小说在线看,百合文学,日本百合,国内百合,GL,百合,轻小说,Yuri" />
+  <meta name="theme-color" content="#ff6bd6" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://YOUR-SITE.pages.dev/" />
+  <!-- 社交分享 -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="百合小说分享站" />
+  <meta property="og:title" content="百合小说分享站 - Yuri小说 · GL小说 · 儿童病例的神秘网站" />
+  <meta property="og:description" content="收录 1922 部已完结百合小说（Yuri / GL），支持分类浏览、搜索、在线阅读与免费下载。" />
+  <meta property="og:image" content="https://YOUR-SITE.pages.dev/avatar.jpg" />
+  <meta property="og:url" content="https://YOUR-SITE.pages.dev/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://busuanzi.ibruce.info" crossorigin />
+  <link rel="preconnect" href="https://abacus.jasoncameron.dev" crossorigin />
+  <link rel="dns-prefetch" href="https://busuanzi.ibruce.info" />
+  <link rel="preload" href="manifest.json" as="fetch" crossorigin />
+  <link rel="stylesheet" href="style.css?v=19" />
+  <!-- 结构化数据(搜索引擎理解站点) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "百合小说分享站",
+    "alternateName": ["Yuri小说", "GL小说", "儿童病例的神秘网站", "百合小说"],
+    "url": "https://YOUR-SITE.pages.dev/",
+    "inLanguage": "zh-CN",
+    "description": "收录 1922 部已完结百合小说（Yuri / GL），支持分类浏览、搜索、在线阅读与免费下载。",
+    "keywords": "百合小说,GL小说,Yuri小说,儿童病例,百合小说分享站",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://YOUR-SITE.pages.dev/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="sparkles"></canvas>
+  <button id="theme-toggle" class="theme-toggle" type="button" title="切换深色模式">🌙</button>
+  <div class="page">
+    <!-- 顶部 -->
+    <header class="hero">
+      <div class="avatar-block">
+        <img id="site-avatar" class="site-avatar" src="avatar.jpg?v=2" alt="头像" />
+        <div class="avatar-name">儿童病例</div>
+        <div class="avatar-sub">全世界同名</div>
+      </div>
+      <div class="hero-stars">☆ ★ ✦ ☆</div>
+      <h1 class="title">百 合 小 说 分 享 站</h1>
+      <p class="tagline" id="site-tagline">Yuri小说 · 儿童病例的神秘网站 · GL小说</p>
+      <p class="hero-stat">📚 本站共收藏 <b id="total-count">0</b> 部作品</p>
+      <div class="hero-stars">✦ ☆ ★ ✦</div>
+    </header>
+
+    <!-- 支持正版 -->
+    <section class="panel notice">
+      <p class="notice-main">💗 如果你喜欢这里的作品，<b>有能力的话请去支持正版哦～</b></p>
+      <p class="notice-sub">本页仅供同好交流与试读，请于下载后 24 小时内删除；喜欢请购买正版、支持作者。</p>
+    </section>
+
+    <!-- 站点简介(静态文本, 便于搜索引擎识别关键词) -->
+    <p class="seo-text">
+      百合小说分享站 —— 一个收录 <b>1922 部已完结百合小说</b> 的 Yuri 小说 / GL 小说分享站。
+      站内包含 <b>日本百合</b>、<b>国内百合</b>、<b>儿童病例</b> 等分类，
+      支持按书名 / 作者 / 分类搜索、分类筛选、多种排版、<b>在线阅读</b> 与 <b>免费下载</b>。
+      本站也常被称作：Yuri 小说站、GL 小说站、百合文学站、儿童病例的神秘网站。
+      如果你在找好看的百合小说、Yuri 小说、GL 小说，欢迎来这里逛逛～
+    </p>
+
+    <!-- 检索 -->
+    <section class="panel">
+      <h2 class="sec-title">🔍 检索 &amp; 浏览</h2>
+      <div class="toolbar">
+        <input id="search" class="search" type="search" placeholder="搜书名 / 作者 / 分类 / 正文内容…" />
+      </div>
+      <div id="catChips" class="chips"></div>
+      <div class="filters">
+        <label>格式
+          <select id="f-ext">
+            <option value="">全部</option>
+            <option value="txt">txt</option>
+            <option value="epub">epub</option>
+            <option value="docx">docx</option>
+          </select>
+        </label>
+        <label>大小
+          <select id="f-size">
+            <option value="">全部</option>
+            <option value="s">小于 500KB</option>
+            <option value="m">500KB ~ 2MB</option>
+            <option value="l">大于 2MB</option>
+          </select>
+        </label>
+        <label>排序
+          <select id="f-sort">
+            <option value="title">按书名</option>
+            <option value="size">按大小</option>
+            <option value="views">按浏览量</option>
+          </select>
+        </label>
+        <label>排版
+          <select id="f-layout">
+            <option value="list">列表（大卡）</option>
+            <option value="grid2">两列</option>
+            <option value="grid3">三列</option>
+            <option value="compact">紧凑行</option>
+          </select>
+        </label>
+      </div>
+      <p id="result-line" class="result-line"></p>
+    </section>
+
+    <!-- 随机推荐 -->
+    <section class="panel">
+      <h2 class="sec-title">🎲 随便看看 <button id="random-refresh" class="btn mini" type="button">换一批</button></h2>
+      <div id="random-list" class="random-list"></div>
+    </section>
+
+    <!-- 我的书架入口 -->
+    <div class="mybar">
+      <button id="open-shelf" class="btn shelf-btn" type="button">📚 我的阅读记录 / 书签</button>
+    </div>
+
+    <!-- 列表 -->
+    <div id="file-list" class="grid"></div>
+    <div id="empty" class="empty" hidden>📭 没有匹配的作品～</div>
+
+    <!-- 分页 -->
+    <div id="pager" class="pager" hidden>
+      <button id="pg-prev" class="btn" type="button">‹ 上一页</button>
+      <span id="pg-info" class="pg-info"></span>
+      <button id="pg-next" class="btn" type="button">下一页 ›</button>
+    </div>
+
+    <!-- 继续阅读 -->
+    <button id="continue-read" class="continue-btn" type="button" hidden></button>
+
+    <footer class="foot">
+      <div>✨ 百合小说分享站 · 用爱发电 ✨</div>
+      <div class="stats">👀 总访问量 <b id="busuanzi_value_site_pv">-</b> · 总访问人数 <b id="busuanzi_value_site_uv">-</b></div>
+    </footer>
+  </div>
+
+  <!-- 详情弹窗 -->
+  <div id="detail-modal" class="modal" hidden>
+    <div class="modal-box detail-box">
+      <div class="detail-head">
+        <div id="detail-cover" class="detail-cover none"></div>
+        <div>
+          <h2 id="detail-title" class="detail-title"></h2>
+          <div id="detail-meta" class="detail-meta"></div>
+        </div>
+      </div>
+      <div id="detail-tags" class="tags"></div>
+      <div id="detail-summary" class="detail-summary"></div>
+      <div class="detail-actions">
+        <a id="detail-download" class="btn primary" href="#">⬇ 下载</a>
+        <button id="detail-read" class="btn" type="button">📖 在线阅读</button>
+        <button id="detail-fav" class="btn" type="button">⭐ 收藏</button>
+        <button id="detail-close" class="btn" type="button">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 在线阅读 -->
+  <div id="reader" class="reader" hidden>
+    <div class="reader-bar">
+      <div class="reader-title" id="reader-title">阅读</div>
+      <div class="reader-tools">
+        <span id="rd-progress" class="rd-progress">0%</span>
+        <select id="rd-font" class="rd-font" title="字体">
+          <option value="">默认字体</option>
+          <option value="hei">黑体</option>
+          <option value="song">宋体</option>
+          <option value="kai">楷体</option>
+          <option value="xihei">细黑</option>
+        </select>
+        <button id="rd-mode" class="btn mini" type="button">📄 翻页</button>
+        <button id="rd-mark" class="btn mini" type="button">🔖 加书签</button>
+        <button id="rd-font-minus" class="btn mini" type="button">A－</button>
+        <button id="rd-font-plus" class="btn mini" type="button">A＋</button>
+        <button id="rd-theme" class="btn mini" type="button">🌙</button>
+        <a id="rd-download" class="btn mini primary" href="#" download>下载</a>
+        <button id="rd-close" class="btn mini" type="button">关闭</button>
+      </div>
+    </div>
+    <div id="reader-content" class="reader-content">加载中…</div>
+    <div id="rd-pagenav" class="rd-pagenav" hidden>
+      <button id="rd-prev" class="btn mini" type="button">‹ 上一页</button>
+      <span id="rd-pageinfo" class="rd-pageinfo"></span>
+      <button id="rd-next" class="btn mini" type="button">下一页 ›</button>
+    </div>
+  </div>
+
+  <!-- 我的阅读记录 / 书签 -->
+  <div id="shelf-modal" class="modal" hidden>
+    <div class="modal-box shelf-box">
+      <div class="shelf-tabs">
+        <button id="tab-hist" class="btn mini active" type="button">📚 阅读记录</button>
+        <button id="tab-mark" class="btn mini" type="button">🔖 我的书签</button>
+        <button id="tab-fav" class="btn mini" type="button">⭐ 我的收藏</button>
+      </div>
+      <div id="shelf-list" class="shelf-list"></div>
+      <div class="detail-actions">
+        <button id="shelf-clear" class="btn danger-outline" type="button">清空</button>
+        <button id="shelf-close" class="btn" type="button">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=19"></script>
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</body>
+</html>

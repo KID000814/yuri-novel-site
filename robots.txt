@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /library/
+Disallow: /sw.js
+
+Sitemap: https://YOUR-SITE.pages.dev/sitemap.xml

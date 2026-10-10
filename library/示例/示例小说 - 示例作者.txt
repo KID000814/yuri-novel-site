@@ -1,0 +1,21 @@
+书名：示例小说
+作者：示例作者
+状态：完结
+
+第一章 这是一本示例书
+
+这是用于演示的示例文本。部署你自己的站点时：
+
+1. 把你的小说（.txt / .epub / .docx）放进 library/ 目录，可以按分类建子文件夹，
+   例如 library/日本百合/xxx.txt、library/国内百合/yyy.txt。
+2. 运行 npm run build 重新生成 manifest.json（书目）。
+3. 部署到 Cloudflare Pages。
+
+文件名建议写成「书名 - 作者.txt」，方便自动识别作者。
+如果文件名不包含作者，脚本会尝试从正文前 2000 字里的「作者：xxx」提取。
+
+第二章 更多说明
+
+- 支持编码自动识别：UTF-8 / GBK / Shift-JIS 都会自动转成 UTF-8。
+- 站点完全静态，无需后端；书目通过 manifest.json 驱动。
+- 阅读进度 / 书签 / 收藏 / 阅读记录都存在浏览器本地（localStorage）。
