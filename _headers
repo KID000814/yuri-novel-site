@@ -1,0 +1,23 @@
+# 页面和脚本不缓存（避免用户看到旧版本）
+/
+  Cache-Control: no-cache, must-revalidate
+
+/index.html
+  Cache-Control: no-cache, must-revalidate
+
+/sw.js
+  Cache-Control: no-cache, must-revalidate
+
+# 带版本号?的静态资源可以长缓存
+/app.js
+  Cache-Control: public, max-age=300
+
+/style.css
+  Cache-Control: public, max-age=300
+
+# 数据文件短缓存
+/catalog.json
+  Cache-Control: public, max-age=300
+
+/sites.json
+  Cache-Control: public, max-age=300

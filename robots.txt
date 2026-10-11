@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /library/
-Disallow: /sw.js
+Disallow: /api/raw
+Disallow: /api/probe
+Crawl-delay: 1
 
-Sitemap: https://YOUR-SITE.pages.dev/sitemap.xml
+Sitemap: https://yuri-nav.pages.dev/sitemap.xml

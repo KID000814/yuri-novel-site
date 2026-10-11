@@ -4,10 +4,11 @@
  */
 'use strict';
 
+/* ---------- 全局配置 ---------- */
 const MANIFEST_URL = 'manifest.json';
 const INDEX_URL = 'search-index.json';
 const PAGE_SIZE = 24;
-const DEFAULT_CATS = ['日本百合', '国内百合', '儿童病例'];
+const DEFAULT_CATS = ['百合会', 'カクヨム', 'なろう', '晋江文学城', '刺猬猫', '已消失的百合'];
 const SIZES = { s: [0, 500 * 1024], m: [500 * 1024, 2 * 1024 * 1024], l: [2 * 1024 * 1024, Infinity] };
 
 const $ = (s) => document.querySelector(s);
@@ -17,6 +18,15 @@ const state = { books: [], index: null, indexLoading: false, cat: '全部', q: '
 function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
 function fmtSize(b) { if (!b) return '未知'; if (b < 1024) return b + ' B'; if (b < 1048576) return (b / 1024).toFixed(1) + ' KB'; return (b / 1048576).toFixed(1) + ' MB'; }
 function iconFor(ext) { return ext === 'epub' ? '📕' : ext === 'docx' ? '📖' : '📄'; }
+function hl(text, q) {
+  const t = escapeHtml(text == null ? '' : String(text));
+  const k = (q || '').trim();
+  if (!k) return t;
+  try {
+    const safe = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return t.replace(new RegExp('(' + safe + ')', 'gi'), '<mark class="hl">$1</mark>');
+  } catch (_) { return t; }
+}
 function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 function colorFor(s) {
   const c = ['#ff6bd6', '#8b5cf6', '#38bdf8', '#f472b6', '#a78bfa', '#22d3ee', '#fb7185', '#fbbf24'];
@@ -25,11 +35,192 @@ function colorFor(s) {
 }
 function dlOf(b) { return b.path.split('/').map(encodeURIComponent).join('/'); }
 
+
+/* ---------- 百合阅读站入口(按分类智能匹配) ---------- */
+const ZB_JP = [
+  { k: 'narou', name: '小説家になろう', icon: '📖', url: (q) => `https://yomou.syosetu.com/search.php?word=${encodeURIComponent(q)}` },
+  { k: 'kakuyomu', name: 'カクヨム', icon: '📗', url: (q) => `https://kakuyomu.jp/search?q=${encodeURIComponent(q)}` },
+];
+const ZB_CN = [
+  { k: 'jjwxc', name: '晋江文学城', icon: '📘', url: (q) => `https://www.jjwxc.net/search.php?kw=${encodeURIComponent(q)}` },
+  { k: 'gongzi', name: '长佩文学', icon: '📙', url: (q) => `https://www.gongzicp.com/search?keyword=${encodeURIComponent(q)}` },
+];
+const ZB_ALL = [
+  { k: 'yamibo', name: '百合会', icon: '🌸', url: () => 'https://www.yamibo.com/' },
+  { k: 'weread', name: '微信读书', icon: '📚', url: (q) => `https://weread.qq.com/web/search/global?keyword=${encodeURIComponent(q)}` },
+];
+function zbQuery(b) { return (b.title || '').trim(); }
+function zbListFor(b) {
+  const jp = /日本/.test(b.category || '');
+  return [...(jp ? ZB_JP : ZB_CN), ...ZB_ALL];
+}
+function zbLinkHtml(b, cls) {
+  const q = zbQuery(b);
+  // ① 有原文直链(なろう等) → 排第一(真正有效的直达链接)
+  const src = b.url
+    ? `<a class="zb-link zb-src ${cls || ''}" href="${b.url}" target="_blank" rel="noopener noreferrer">📖 ${escapeHtml(b.srcName || '阅读原文')}</a>`
+    : '';
+  return src + zbListFor(b).map((p) =>
+    `<a class="zb-link ${cls || ''}" href="${p.url(q)}" target="_blank" rel="noopener noreferrer" title="去${p.name}找《${escapeHtml(q)}》">${p.icon} ${p.name}</a>`
+  ).join('');
+}
+
+/* ---------- 中文标题对照表 ---------- */
+let ZH_MAP = {};
+async function loadZhMap() {
+  try {
+    const r = await fetch('titles-zh.json', { cache: 'no-cache' });
+    if (r.ok) ZH_MAP = await r.json();
+  } catch (_) {}
+}
+
+/* ---------- 从 なろう 官方 API 加载书目(经 Cloudflare Worker 代理) ---------- */
+let NAROU_LOADED = 0;
+
+// 由「来源 + ID」推导作品链接（省掉数据里的 670KB 链接字段）
+const URL_RULES = {
+  'なろう': (n) => 'https://ncode.syosetu.com/' + n.toLowerCase() + '/',
+  'カクヨム': (n) => 'https://kakuyomu.jp/works/' + n,
+  '晋江文学城': (n) => 'https://www.jjwxc.net/onebook.php?novelid=' + n,
+  '刺猬猫': (n) => 'https://www.ciweimao.com/book/' + n,
+  '百合会': (n) => 'https://www.yamibo.com/novel/' + n,
+};
+function bookUrl(src, id) {
+  const f = URL_RULES[src];
+  return f && id ? f(String(id)) : '';
+}
+
+function mapNarou(list) {
+  return (list || []).map((x) => {
+    const ncode = String(x.n || x.ncode || '');
+    const title = String(x.t || x.title || '');
+    const src = x.s || x.src || 'なろう';
+    const origSrc = x._orig || src;   // 已消失的作品用原来源推导链接
+    const url = x.u || x.url || bookUrl(origSrc, ncode);
+    const len = Number(x.l || x.length || 0);
+    return {
+      id: ncode,
+      title,
+      author: x.a || x.author || '',
+      category: src,
+      ext: 'web',
+      size: len * 500,
+      digest: x.summary || '',
+      bio: '',
+      url,
+      srcName: '在' + src + '阅读',
+      zh: x.z || x.zh || ZH_MAP[ncode] || ZH_MAP[ncode.toUpperCase()] || '',
+      tags: Array.isArray(x.g) ? x.g : [],
+      meta: len > 0 ? len.toLocaleString() + ' 字' : '',
+    };
+  }).filter((b) => b.title && b.url);
+}
+
+function applyCatalog(list, note) {
+  const mapped = mapNarou(list);
+  if (!mapped.length) return false;
+  applyBooks(mapped);
+  NAROU_LOADED = mapped.length;
+  const rl = $('#result-line');
+  if (rl) rl.textContent = note || ('なろう（小説家になろう）· 共 ' + mapped.length + ' 部百合作品');
+  return true;
+}
+
+/* ① 静态快照(永远可用) → ② 后台尝试实时 API(拿更多) */
+async function loadNarou() {
+    // 骨架屏：加载数据前先占位
+    try {
+      const g = document.getElementById('file-list');
+      if (g && !g.children.length) {
+        g.innerHTML = Array.from({ length: 6 }).map(function () {
+          return '<div class="nv-item skel"><div class="sk-line w70"></div><div class="sk-line w45"></div><div class="sk-btn"></div></div>';
+        }).join('');
+      }
+    } catch (_) {}
+    // ② 回退: 老的单文件
+  const box = $('#empty');
+  // ① 本地快照
+      // 并发拉取分片 + 可见状态
+      const st = document.getElementById('result-line');
+      if (st) st.textContent = '⏳ 正在加载书目数据…';
+      try {
+        const PARTS = ["data/part-00.json", "data/part-01.json", "data/part-02.json", "data/part-03.json", "data/part-04.json", "data/part-05.json", "data/part-06.json", "data/part-07.json", "data/part-08.json", "data/part-09.json", "data/part-10.json", "data/part-11.json", "data/part-12.json", "data/part-13.json", "data/part-14.json", "data/part-15.json", "data/part-16.json", "data/part-17.json", "data/part-18.json", "data/part-19.json", "data/part-20.json", "data/part-21.json", "data/part-22.json", "data/part-23.json", "data/part-24.json"];
+        const results = await Promise.all(PARTS.map(function (f) {
+          return fetch(f).then(function (r) { return r.ok ? r.json() : null; })
+            .catch(function (e) { return { __err: f + ':' + String((e && e.message) || e).slice(0, 25) }; });
+        }));
+        let all = [];
+        const errs = [];
+        let okN = 0;
+        for (const jj of results) {
+          if (!jj) { errs.push('空响应'); continue; }
+          if (jj.__err) { errs.push(jj.__err); continue; }
+          okN++;
+          if (jj.list) all = all.concat(jj.list);
+        }
+        if (all.length) {
+          const seen = Object.create(null);
+          const uniq = [];
+          for (const x of all) { if (!seen[x.n]) { seen[x.n] = 1; uniq.push(x); } }
+          applyCatalog(uniq, '共 ' + uniq.length.toLocaleString() + ' 部百合/GL 作品');
+        } else if (st) {
+          st.textContent = '⚠️ 数据加载失败（成功 ' + okN + '/15 片）' + (errs.length ? ' · ' + errs.slice(0, 2).join(' | ') : '');
+        }
+      } catch (e) {
+        if (st) st.textContent = '⚠️ 加载异常: ' + String((e && e.message) || e).slice(0, 70);
+      }
+
+}
+function zbOpen(b, plat) {
+  const list = zbListFor(b);
+  const p = list.find((x) => x.k === plat) || list[0];
+  if (p) window.open(p.url(zbQuery(b)), '_blank', 'noopener');
+}
+
+/* ---------- 百合/GL 站点大全 ---------- */
+async function loadSites() {
+  const box = $('#sites-list');
+  if (!box) return;
+  try {
+    const r = await fetch('sites.json', { cache: 'no-cache' });
+    if (!r.ok) throw new Error('sites ' + r.status);
+    const groups = await r.json();
+    const all = groups.reduce((a, g) => a.concat(g.sites || []), []);
+    const vpnN = all.filter((x) => x.vpn).length;
+    const cnt = $('#vpn-count');
+    if (cnt) cnt.textContent = `（共 ${all.length} 站 · 其中 ${vpnN} 站需网络工具）`;
+    box.innerHTML = groups.map((g) => `
+      <div class="site-group">
+        <div class="site-region">${escapeHtml(g.region)}</div>
+        <div class="site-cards">
+          ${(g.sites || []).map((x) => {
+            const home = x.url || '#';
+            const yuri = x.yurl || home;
+            return `<div class="site-card${x.vpn ? ' need-vpn' : ''}">
+              <b>${escapeHtml(x.name)}${x.vpn ? ' <span class="vpn-badge">🌐 需网络工具</span>' : ''}</b>
+              ${x.yuri ? `<span class="site-yuri">🌸 百合专区：${escapeHtml(x.yuri)}</span>` : ''}
+              <span class="site-desc">${escapeHtml(x.desc || '')}</span>
+              <div class="site-actions">
+                <a class="sa-yuri" href="${yuri}" target="_blank" rel="noopener noreferrer">🌸 进百合专区</a>
+                <a class="sa-home" href="${home}" target="_blank" rel="noopener noreferrer">🏠 站首页</a>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`).join('');
+  } catch (_) {
+    box.innerHTML = '<p class="empty">站点清单加载失败，请刷新重试</p>';
+  }
+}
+
 /* ---------- 列表排版 ---------- */
 const LAYOUT_KEY = 'list-layout';
-const PAGE_SIZE_BY_LAYOUT = { list: 20, grid2: 20, grid3: 24, compact: 30 };
-function getLayout() { try { return localStorage.getItem(LAYOUT_KEY) || 'list'; } catch (_) { return 'list'; } }
-function pageSizeOf() { return PAGE_SIZE_BY_LAYOUT[getLayout()] || 20; }
+const COLS_KEY = 'list-cols';
+const COMPACT_KEY = 'list-compact';
+const PAGE_SIZE_BY_COLS = { 1: 50, 2: 60, 3: 60, 4: 80, 5: 100, 6: 120 };
+function getCols() { try { const v = parseInt(localStorage.getItem(COLS_KEY) || '1', 10); return (v >= 1 && v <= 6) ? v : 1; } catch (_) { return 1; } }
+function getCompact() { try { return localStorage.getItem(COMPACT_KEY) === '1'; } catch (_) { return false; } }
+function pageSizeOf() { return PAGE_SIZE_BY_COLS[getCols()] || 50; }
 
 /* ---------- 封面 ---------- */
 function coverHtml(b, big) {
@@ -43,18 +234,44 @@ function coverHtml(b, big) {
 }
 
 /* ---------- 分类 ---------- */
-function countOf(cat) { return cat === '全部' ? state.books.length : state.books.filter((b) => b.category === cat).length; }
-function renderChips() {
-  const chips = $('#catChips'); chips.innerHTML = '';
-  const found = state.books.map((b) => b.category).filter(Boolean);
-  const cats = ['全部', ...new Set([...DEFAULT_CATS, ...found])];
-  cats.forEach((c) => {
-    const b = el('button', 'chip' + (c === state.cat ? ' active' : ''));
-    b.innerHTML = `${escapeHtml(c)}<span class="chip-count">${countOf(c)}</span>`;
-    b.addEventListener('click', () => { state.cat = c; state.page = 1; renderList(); });
-    chips.appendChild(b);
-  });
+let __catCount = null;
+let __visCache = { key: '', list: null };   // ← 之前漏了声明, 导致 strict 模式报错
+function buildCatCount() {
+  const m = {};
+  for (let i = 0; i < state.books.length; i++) {
+    const c = state.books[i].category;
+    if (c) m[c] = (m[c] || 0) + 1;
+  }
+  m['全部'] = state.books.length;
+  __catCount = m;
 }
+function countOf(cat) {
+  if (!__catCount) buildCatCount();
+  return __catCount[cat] || 0;
+}
+function renderChips() {
+  const chips = $('#catChips');
+  chips.innerHTML = '';
+  // 大分类: 百合(全部)
+  const parent = el('button', 'chip chip-parent' + (state.cat === '全部' ? ' active' : ''));
+  parent.innerHTML = `🌼 百合<span class="chip-count">${state.books.length}</span>`;
+  parent.addEventListener('click', () => { state.cat = '全部'; state.page = 1; renderList(); });
+  chips.appendChild(parent);
+  // 子分类
+  const found = state.books.map((b) => b.category).filter(Boolean);
+    const cats = [...new Set([...DEFAULT_CATS, ...found])]
+      .filter((c) => c && c !== '全部' && (countOf(c) > 0 || c === state.cat));
+  if (cats.length) {
+    chips.appendChild(el('span', 'chip-sep', '子分类'));
+    cats.forEach((c) => {
+      const b = el('button', 'chip chip-sub' + (c === state.cat ? ' active' : ''));
+      b.innerHTML = `${escapeHtml(c)}<span class="chip-count">${countOf(c)}</span>`;
+      b.addEventListener('click', () => { state.cat = c; state.page = 1; renderList(); });
+      chips.appendChild(b);
+    });
+  }
+}
+
 
 /* ---------- 筛选 ---------- */
 function visible() {
@@ -79,10 +296,18 @@ function visible() {
 /* ---------- 列表 ---------- */
 function renderList() {
   const grid = $('#file-list');
-  grid.className = 'layout-' + getLayout();
+  const cols = getCols(), compact = getCompact();
+  grid.className = '';
+  grid.style.setProperty('--cols', String(cols));
+  const effCols = (window.innerWidth <= 640) ? Math.min(cols, 2) : cols;
+  grid.style.gridTemplateColumns = 'repeat(' + effCols + ', minmax(0, 1fr))';
+  grid.style.setProperty('--gap', cols >= 4 ? '8px' : '10px');
+  grid.dataset.cols = String(cols);
+  grid.dataset.compact = compact ? '1' : '0';
   const list = visible();
   const total = state.books.length;
   $('#total-count').textContent = total;
+  try { updateTabCounts(); } catch (_) {}
 
   // 分页
   const pages = Math.max(1, Math.ceil(list.length / pageSizeOf()));
@@ -102,31 +327,29 @@ function renderList() {
   $('#empty').hidden = list.length > 0;
   grid.innerHTML = '';
   pageItems.forEach((b) => {
-    const card = el('div', 'file-item');
-    card.style.setProperty('--accent', colorFor(b.path || b.id));
-    card.innerHTML =
-      `<button class="fav-star${isFav(b.id) ? ' on' : ''}" data-fav="${b.id}" title="${isFav(b.id) ? '取消收藏' : '收藏'}">${isFav(b.id) ? '★' : '☆'}</button>` +
-      coverHtml(b) +
-      `<div class="card-body">
-         <div class="card-title">${escapeHtml(b.title)}</div>
-         ${b.author ? `<div class="card-author">✍ ${escapeHtml(b.author)}</div>` : ''}
-         <div class="card-sub">
-           ${b.category ? `<span class="tag">${escapeHtml(b.category)}</span>` : ''}
-           <span class="tag fmt">${escapeHtml(b.ext)}</span>
-         </div>
-         ${b.digest ? `<div class="card-summary">${escapeHtml(b.digest)}…</div>` : ''}
-       </div>
-       <div class="card-foot">
-         <span class="muted">${fmtSize(b.size)}${viewCountOf(b.id) != null ? ' · 👁 ' + viewCountOf(b.id) : ''}</span>
-         <button class="btn mini" data-open="${b.id}">详情</button>
-         <button class="btn mini read-btn" data-read="${b.id}">📖 阅读</button>
-         <a class="btn mini primary" href="${dlOf(b)}" download="${escapeHtml(b.title)}.${b.ext}">下载</a>
-       </div>`;
-    card.querySelector('[data-open]')?.addEventListener('click', (ev) => { ev.stopPropagation(); openDetail(b); });
-    card.querySelector('[data-read]')?.addEventListener('click', (ev) => { ev.stopPropagation(); openReader(b); });
-    card.addEventListener('click', () => openDetail(b));
-    card.querySelector('[data-fav]')?.addEventListener('click', (ev) => { ev.stopPropagation(); toggleFav(b); });
-    grid.appendChild(card);
+    const item = el('div', 'nv-item');
+    const t = b.url
+      ? `<a class="nv-title" href="${b.url}" target="_blank" rel="noopener noreferrer" title="点击直达作品页">${hl(b.title, state.q)}</a>`
+      : `<span class="nv-title">${escapeHtml(b.title)}</span>`;
+    const src = b.category || b.src || '';
+    const links = b.url
+      ? `<div class="nv-links"><a class="zb-link zb-src" href="${b.url}" target="_blank" rel="noopener noreferrer">📖 ${escapeHtml(src)} 直达阅读</a></div>`
+      : '';
+      const gone = src === '已消失的百合';
+      const tagList = Array.isArray(b.tags) ? b.tags : [];
+      const tags = tagList.length
+        ? tagList.map((g) => `<span class="nv-tag${/完结/.test(g) ? ' done' : (/连载/.test(g) ? ' on' : '')}">${escapeHtml(g)}</span>`).join('')
+        : '';
+      item.innerHTML =
+        `<div class="nv-head">${t}</div>` +
+        (b.author ? `<div class="nv-author-line">✍ ${hl(b.author, state.q)}</div>` : '') +
+        (b.zh ? `<div class="nv-zh">${escapeHtml(b.zh)}</div>` : '') +
+        `<div class="nv-meta-line">` +
+          (src ? `<span class="nv-src${gone ? ' nv-gone' : ''}">${gone ? '🕯 ' : ''}出自 ${escapeHtml(src)}</span>` : '') +
+          (tags ? tags : '') +
+          (b.meta ? `<span class="nv-note">${escapeHtml(b.meta)}</span>` : '') +
+        `</div>` + links;
+    grid.appendChild(item);
   });
 
   // 分页控件
@@ -135,6 +358,12 @@ function renderList() {
   $('#pg-info').textContent = `第 ${state.page} / ${pages} 页`;
   $('#pg-prev').disabled = state.page <= 1;
   $('#pg-next').disabled = state.page >= pages;
+  const jp = $('#pg-jump');
+  if (jp) {
+    jp.max = String(pages);
+    jp.placeholder = '1-' + pages;
+    if (document.activeElement !== jp) jp.value = String(state.page);
+  }
 }
 
 /* ---------- 全文索引(按需加载) ---------- */
@@ -150,7 +379,7 @@ async function ensureIndex() {
 }
 
 /* ---------- 浏览量 (abacus 免费计数, 详情页内 1 次请求) ---------- */
-const ABACUS_NS = 'yuri-novel-views';   // ← 建议改成你自己的命名空间, 避免与他人共用计数
+const ABACUS_NS = 'yuri-novel-views';
 const hitThisSession = new Set();   // 本次会话已统计过的书
 const viewCache = {};               // id -> 次数(本会话已获取)
 let viewsMap = {};                  // 来自 views.json 的全量快照
@@ -205,11 +434,16 @@ function openDetail(b) {
     (b.category ? `<div class="dm-item"><b>分类</b> ${escapeHtml(b.category)}</div>` : '') +
     `<div class="dm-item"><b>格式</b> ${escapeHtml(b.ext)}</div>` +
     `<div class="dm-item"><b>大小</b> ${fmtSize(b.size)}</div>` +
+    (b.meta ? `<div class="dm-item"><b>规模</b> ${escapeHtml(b.meta)}</div>` : '') +
     `<div class="dm-item"><b>浏览量</b> <span id="detail-views">读取中…</span></div>`;
   $('#detail-tags').innerHTML = '';
-  $('#detail-summary').textContent = (b.digest ? b.digest + '…' : '') + '\n\n（点下方按钮下载阅读全文；喜欢请支持正版。）';
-  $('#detail-download').setAttribute('href', dlOf(b));
-  $('#detail-download').setAttribute('download', `${b.title}.${b.ext}`);
+  $('#detail-summary').textContent =
+    (b.digest ? '【内容大概】\n' + b.digest + '\n\n' : '') +
+    (b.bio ? '【作者简介】\n' + b.bio + '\n\n' : '') +
+    '本站只提供书目索引，不提供下载与在线阅读。请点击上方平台前往正版渠道阅读或购买，支持作者。';
+  const zbBox = $('#detail-zb');
+  if (zbBox) zbBox.innerHTML = zbLinkHtml(b);
+  rdPushHistory(b);                      // 记录浏览
   syncFavBtn();
   $('#detail-modal').hidden = false;
   const vEl = $('#detail-views');
@@ -244,49 +478,9 @@ async function ensureMammoth() {
   await loadScript('https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js');
 }
 
-function openReader(b) {
-  rdBook = b;
-  state.current = b;
-  rdPushHistory(b);
-  closeDetail();
-  const rd = $('#reader');
-  $('#reader-title').textContent = b.title || '阅读';
-  const dl = $('#rd-download');
-  dl.setAttribute('href', dlOf(b));
-  dl.setAttribute('download', `${b.title}.${b.ext}`);
-  const content = $('#reader-content');
-  rd.hidden = false;
-  document.body.classList.add('reading');
-  content.scrollTop = 0;
-  applyRdFont();
-  applyRdFamily();
-  try { history.replaceState(null, '', '#read=' + encodeURIComponent(b.id)); } catch (_) {}
-
-  const url = dlOf(b);
-  if (b.ext === 'txt') {
-    content.textContent = '⏳ 加载中…';
-    fetch(url, { cache: 'force-cache' }).then((r) => r.text()).then((t) => {
-      content.textContent = t.replace(/^\uFEFF/, '');
-      const pend = rdPendingPos; rdPendingPos = null;
-      if (pend) { setTimeout(() => rdApplyPos(pend), 60); }
-      else {
-        content.scrollTop = Number(localStorage.getItem('rd-pos-' + b.id) || 0);
-        setTimeout(rdUpdateProgress, 60);
-        setTimeout(rdApplyMode, 80);
-      }
-    }).catch(() => { content.textContent = '⚠️ 加载失败，请点击「下载」阅读。'; });
-  } else if (b.ext === 'docx') {
-    content.innerHTML = '⏳ 正在解析 Word 文档…';
-    ensureMammoth()
-      .then(() => fetch(url).then((r) => r.arrayBuffer()))
-      .then((buf) => window.mammoth.convertToHtml({ arrayBuffer: buf }))
-      .then((res) => { content.innerHTML = `<div class="docx-body">${res.value}</div>`; content.scrollTop = Number(localStorage.getItem('rd-pos-' + b.id) || 0); })
-      .catch(() => { content.textContent = '⚠️ Word 解析失败（可能没有网络加载解析库），请点击「下载」阅读。'; });
-  } else {
-    content.textContent = `${b.ext.toUpperCase()} 格式暂不支持网页内阅读，请点击右上角「下载」后阅读。`;
-  }
+function openReader() {
+  rdToast('本站不提供在线阅读，请点击「正版平台」前往正版渠道 📗');
 }
-
 function closeReader() {
   rdSaveNow();
   updateContinueBtn();
@@ -299,54 +493,145 @@ function closeReader() {
 function closeDetail() { $('#detail-modal').hidden = true; }
 
 /* ---------- 事件 ---------- */
-$('#search').addEventListener('input', (e) => { state.q = e.target.value; state.page = 1;  renderList(); });
-$('#f-ext').addEventListener('change', (e) => { state.ext = e.target.value; state.page = 1; renderList(); });
-$('#f-size').addEventListener('change', (e) => { state.size = e.target.value; state.page = 1; renderList(); });
-$('#f-sort').addEventListener('change', (e) => { state.sort = e.target.value; renderList(); });
-$('#f-layout').addEventListener('change', (e) => {
-  try { localStorage.setItem(LAYOUT_KEY, e.target.value); } catch (_) {}
-  state.page = 1;
-  renderList();
+// 窗口尺寸变化时重排列数
+let __rsz;
+window.addEventListener('resize', () => {
+  clearTimeout(__rsz);
+  __rsz = setTimeout(() => { try { renderList(); } catch (_) {} }, 200);
 });
-try { $('#f-layout').value = getLayout(); } catch (_) {}
-$('#pg-prev').addEventListener('click', () => { if (state.page > 1) { state.page--; renderList(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
-$('#pg-next').addEventListener('click', () => { state.page++; renderList(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+// "/" 快捷键聚焦搜索
+document.addEventListener('keydown', (e) => {
+  const tag = (e.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+  if (e.key === '/' || (e.key === 'k' && (e.ctrlKey || e.metaKey))) {
+    e.preventDefault();
+    const i = $('#search');
+    if (i) { i.focus(); i.select(); }
+  }
+});
+// 回到顶部按钮
+(function initTop() {
+  const btn = document.createElement('button');
+  btn.id = 'scroll-top'; btn.type = 'button'; btn.title = '回到顶部';
+  btn.textContent = '↑';
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  document.body.appendChild(btn);
+  const onScroll = () => { btn.classList.toggle('show', window.scrollY > 600); };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+
+const jpEl = $('#pg-jump');
+if (jpEl) {
+  const goPage = () => {
+    const n = parseInt(jpEl.value, 10);
+    if (!n || n < 1) return;
+    state.page = n;
+    renderList();
+    scrollToListTop();
+  };
+  jpEl.addEventListener('change', goPage);
+  jpEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); goPage(); } });
+}
+
+const scEl = $('#search-clear');
+function syncSearchClear() {
+  const i = $('#search');
+  if (scEl && i) scEl.hidden = !i.value;
+}
+if (scEl) {
+  scEl.addEventListener('click', () => {
+    const i = $('#search');
+    if (i) { i.value = ''; state.q = ''; state.page = 1; renderList(); i.focus(); }
+    scEl.hidden = true;
+  });
+}
+$('#search').addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { e.target.value = ''; state.q = ''; state.page = 1; syncSearchClear(); renderList(); }
+  if (e.key === 'Enter') { state.page = 1; renderList(); }
+});
+let __searchTimer;
+$('#search').addEventListener('input', (e) => {
+  const v = e.target.value;
+  state.q = v; state.page = 1; syncSearchClear();
+  clearTimeout(__searchTimer);
+  __searchTimer = setTimeout(() => renderList(), 180);   // 防抖: 输入停顿 180ms 才渲染
+});
+$('#f-ext')?.addEventListener('change', (e) => { state.ext = e.target.value; state.page = 1; renderList(); });
+$('#f-size')?.addEventListener('change', (e) => { state.size = e.target.value; state.page = 1; renderList(); });
+$('#f-sort').addEventListener('change', (e) => { state.sort = e.target.value; renderList(); });
+const colsEl = $('#f-cols');
+if (colsEl) {
+  colsEl.value = String(getCols());
+  colsEl.addEventListener('change', (e) => {
+    try { localStorage.setItem(COLS_KEY, e.target.value); } catch (_) {}
+    state.page = 1; renderList();
+  });
+}
+const cpEl = $('#f-compact');
+if (cpEl) {
+  cpEl.checked = getCompact();
+  cpEl.addEventListener('change', (e) => {
+    try { localStorage.setItem(COMPACT_KEY, e.target.checked ? '1' : '0'); } catch (_) {}
+    state.page = 1; renderList();
+  });
+}
+// 翻页：只把「列表顶部」滚到视野内，不跳页面顶部
+function scrollToListTop() {
+  try {
+    const grid = $('#file-list');
+    if (!grid) return;
+    const y = grid.getBoundingClientRect().top + window.scrollY - 90;
+    if (Math.abs(window.scrollY - y) > 8) window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+  } catch (_) {}
+}
+$('#pg-prev').addEventListener('click', () => {
+  if (state.page > 1) { state.page--; renderList(); scrollToListTop(); }
+});
+$('#pg-next').addEventListener('click', () => {
+  const pages = Math.max(1, Math.ceil(visible().length / pageSizeOf()));
+  if (state.page < pages) { state.page++; renderList(); scrollToListTop(); }
+});
 $('#detail-close').addEventListener('click', closeDetail);
 $('#detail-modal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeDetail(); });
 
-/* ---------- 阅读器事件 ---------- */
-$('#detail-read').addEventListener('click', () => { if (state.current) openReader(state.current); });
-$('#rd-close').addEventListener('click', closeReader);
-$('#rd-font-plus').addEventListener('click', () => rdFontSize(2));
-$('#rd-font-minus').addEventListener('click', () => rdFontSize(-2));
-$('#rd-theme').addEventListener('click', (e) => {
-  const dark = document.body.classList.toggle('dark-reader');
-  e.currentTarget.textContent = dark ? '☀️' : '🌙';
-  try { localStorage.setItem('rd-dark', dark ? '1' : '0'); } catch (_) {}
-});
-// 阅读模式切换 (滚动 / 翻页)
-$('#rd-mode').addEventListener('click', () => {
-  const next = rdGetMode() === 'page' ? 'scroll' : 'page';
-  try { localStorage.setItem(RD_MODE_KEY, next); } catch (_) {}
-  rdPage = 0;
-  rdApplyMode();
-});
-$('#rd-prev').addEventListener('click', () => rdGoto(rdPage - 1));
-$('#rd-next').addEventListener('click', () => rdGoto(rdPage + 1));
-$('#rd-mark').addEventListener('click', rdAddMark);
+// 在线阅读已移除：仅当阅读器界面存在时才绑定事件
+if (document.getElementById("reader")) {
+  /* ---------- 阅读器事件 ---------- */
+  // (在线阅读已移除：本站只做正版指引)
+  $('#rd-close').addEventListener('click', closeReader);
+  $('#rd-font-plus').addEventListener('click', () => rdFontSize(2));
+  $('#rd-font-minus').addEventListener('click', () => rdFontSize(-2));
+  $('#rd-theme').addEventListener('click', (e) => {
+    const dark = document.body.classList.toggle('dark-reader');
+    e.currentTarget.textContent = dark ? '☀️' : '🌙';
+    try { localStorage.setItem('rd-dark', dark ? '1' : '0'); } catch (_) {}
+  });
+  // 阅读模式切换 (滚动 / 翻页)
+  $('#rd-mode').addEventListener('click', () => {
+    const next = rdGetMode() === 'page' ? 'scroll' : 'page';
+    try { localStorage.setItem(RD_MODE_KEY, next); } catch (_) {}
+    rdPage = 0;
+    rdApplyMode();
+  });
+  $('#rd-prev').addEventListener('click', () => rdGoto(rdPage - 1));
+  $('#rd-next').addEventListener('click', () => rdGoto(rdPage + 1));
+  $('#rd-mark').addEventListener('click', rdAddMark);
 
+}
 /* ---------- 书架事件 ---------- */
 $('#open-shelf').addEventListener('click', () => openShelf('hist'));
 $('#shelf-close').addEventListener('click', closeShelf);
 $('#tab-hist').addEventListener('click', () => openShelf('hist'));
-$('#tab-mark').addEventListener('click', () => openShelf('mark'));
+// (书签功能已移除：无在线阅读)
 $('#tab-fav').addEventListener('click', () => openShelf('fav'));
 $('#detail-fav').addEventListener('click', () => { if (state.current) toggleFav(state.current); });
 $('#shelf-modal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeShelf(); });
 $('#shelf-clear').addEventListener('click', () => {
-  const msg = shelfTab === 'hist' ? '确定清空全部阅读记录？' : '确定清空全部书签？';
+  const msg = shelfTab === 'hist' ? '确定清空全部浏览记录？' : '确定清空全部收藏？';
   if (!window.confirm(msg)) return;
-  rdSet(shelfTab === 'hist' ? 'rd-history' : 'rd-marks', []);
+  if (shelfTab === 'hist') rdSet('rd-history', []); else rdSet('rd-favs', []);
   renderShelf();
 });
 $('#shelf-list').addEventListener('click', (e) => {
@@ -355,18 +640,18 @@ $('#shelf-list').addEventListener('click', (e) => {
   if (item.dataset.act === 'open') {
     const b = state.books.find((x) => x.id === item.dataset.id);
     if (!b) { rdToast('这本书找不到了'); return; }
-    closeShelf(); openReader(b);
+    closeShelf(); openDetail(b);
   } else if (item.dataset.act === 'mark') {
     const m = rdGet('rd-marks', [])[Number(item.dataset.idx)];
     if (!m) return;
     const b = state.books.find((x) => x.id === m.id);
     if (!b) { rdToast('这本书找不到了'); return; }
     rdPendingPos = m;
-    closeShelf(); openReader(b);
+    closeShelf(); openDetail(b);
   }
 });
 // 点击阅读区翻页: 左侧 1/3 上一页, 其余下一页
-$('#reader-content').addEventListener('click', (e) => {
+if (document.getElementById('reader-content')) $('#reader-content').addEventListener('click', (e) => {
   if (!rdBook || rdGetMode() !== 'page') return;
   if (window.getSelection && String(window.getSelection()) !== '') return;   // 有选中文字则不翻页
   const rect = e.currentTarget.getBoundingClientRect();
@@ -413,7 +698,7 @@ function rdSaveNow() {
     localStorage.setItem('rd-last', rdBook.id);
   } catch (_) {}
 }
-$('#reader-content').addEventListener('scroll', () => {
+if (document.getElementById('reader-content')) $('#reader-content').addEventListener('scroll', () => {
   if (!rdBook) return;
   rdUpdateProgress();
   if (rdSaveTimer) return;                       // 节流: 最多每 700ms 存一次
@@ -426,7 +711,7 @@ function updateContinueBtn() {
   if (!btn) return;
   let id = null; try { id = localStorage.getItem('rd-last'); } catch (_) {}
   const b = id ? state.books.find((x) => x.id === id) : null;
-  if (b) { btn.hidden = false; btn.textContent = `📖 继续阅读《${b.title}》（已读到 ${currentPct(b)}%）`; btn.onclick = () => openReader(b); }
+  if (b) { btn.hidden = false; btn.textContent = `🕘 最近浏览《${b.title}》`; btn.onclick = () => openDetail(b); }
   else btn.hidden = true;
 }
 function currentPct(b) {
@@ -527,7 +812,7 @@ function applyRdFamily() {
   const sel = $('#rd-font');
   if (sel) sel.value = v;
 }
-$('#rd-font').addEventListener('change', (e) => {
+if (document.getElementById('rd-font')) $('#rd-font').addEventListener('change', (e) => {
   try { localStorage.setItem('rd-family', e.target.value); } catch (_) {}
   applyRdFamily();
   if (rdBook && rdGetMode() === 'page') {
@@ -623,9 +908,8 @@ function syncFavBtn() {
 let shelfTab = 'hist';
 function openShelf(tab) {
   shelfTab = tab || 'hist';
-  $('#tab-hist').classList.toggle('active', shelfTab === 'hist');
-  $('#tab-mark').classList.toggle('active', shelfTab === 'mark');
-  $('#tab-fav').classList.toggle('active', shelfTab === 'fav');
+  const th = $('#tab-hist'); if (th) th.classList.toggle('active', shelfTab === 'hist');
+  const tf = $('#tab-fav'); if (tf) tf.classList.toggle('active', shelfTab === 'fav');
   renderShelf();
   $('#shelf-modal').hidden = false;
 }
@@ -672,8 +956,11 @@ function renderShelf() {
 
 /* ---------- 随机推荐 ---------- */
 const RD_PICK = 5;
+const RD_CAT_KEY = 'random-cat';
+function randomCat() { try { return localStorage.getItem(RD_CAT_KEY) || '全部'; } catch (_) { return '全部'; } }
 function pickRandom(n) {
-  const all = state.books;
+  const __cat = randomCat();
+  const all = (__cat && __cat !== '全部') ? state.books.filter((bb) => bb.category === __cat) : state.books;
   if (!all.length) return [];
   if (all.length <= n) return all.slice();
   const picked = new Set(), out = [];
@@ -690,29 +977,58 @@ function renderRandom() {
   if (!box) return;
   const list = pickRandom(RD_PICK);
   if (!list.length) { box.innerHTML = '<p class="empty">还没有作品～</p>'; return; }
-  box.innerHTML = list.map((b) => `
-    <div class="rnd-item" data-open="${b.id}">
-      <div class="rnd-title">${escapeHtml(b.title)}</div>
-      <div class="rnd-sub">${escapeHtml(b.category || '未分类')} · ${escapeHtml(b.ext)} · ${fmtSize(b.size)}${b.author ? ' · ✍ ' + escapeHtml(b.author) : ''}</div>
-      <div class="rnd-actions">
-        <button class="btn mini" data-open-btn="${b.id}">详情</button>
-        <button class="btn mini read-btn" data-read="${b.id}">📖 直接阅读</button>
-      </div>
-    </div>`).join('');
+  box.innerHTML = list.map((b) => {
+      const t = b.url
+        ? `<a class="nv-title" href="${b.url}" target="_blank" rel="noopener noreferrer" title="点击直达作品页">${hl(b.title, state.q)}</a>`
+        : `<span class="nv-title">${escapeHtml(b.title)}</span>`;
+      const src = b.category || '';
+      return `<div class="nv-item">` +
+        `<div class="nv-head">${t}</div>` +
+        (b.author ? `<div class="nv-author-line">✍ ${hl(b.author, state.q)}</div>` : '') +
+        (b.zh ? `<div class="nv-zh">${escapeHtml(b.zh)}</div>` : '') +
+        `<div class="nv-meta-line">` +
+          (src ? `<span class="nv-src">出自 ${escapeHtml(src)}</span>` : '') +
+          (b.meta ? `<span class="nv-note">${escapeHtml(b.meta)}</span>` : '') +
+        `</div>` +
+        (b.url ? `<div class="nv-links"><a class="zb-link zb-src" href="${b.url}" target="_blank" rel="noopener noreferrer">📖 ${escapeHtml(src)} 直达阅读</a></div>` : '') +
+      `</div>`;
+    }).join('');
+
   const find = (id) => list.find((x) => x.id === id);
   box.querySelectorAll('[data-open-btn]').forEach((n) => n.addEventListener('click', (e) => { e.stopPropagation(); const b = find(n.dataset.openBtn); if (b) openDetail(b); }));
-  box.querySelectorAll('[data-read]').forEach((n) => n.addEventListener('click', (e) => { e.stopPropagation(); const b = find(n.dataset.read); if (b) openReader(b); }));
+  box.querySelectorAll('[data-zb]').forEach((n) => n.addEventListener('click', (e) => { e.stopPropagation(); const b = find(n.dataset.zb); if (b) zbOpen(b, 'wx'); }));
   box.querySelectorAll('.rnd-item').forEach((n) => n.addEventListener('click', () => { const b = find(n.dataset.open); if (b) openDetail(b); }));
+}
+// 随机分类选择器
+function initRandomCat() {
+  const sel = $('#random-cat');
+  if (!sel) return;
+  const cats = ['全部', ...new Set(state.books.map((b) => b.category).filter(Boolean))];
+  const cur = randomCat();
+  sel.innerHTML = cats.map((c) => {
+    const n = c === '全部' ? state.books.length : state.books.filter((b) => b.category === c).length;
+    return '<option value="' + escapeHtml(c) + '"' + (c === cur ? ' selected' : '') + '>' + escapeHtml(c) + '（' + n + '）</option>';
+  }).join('');
+  if (!cats.includes(cur)) { sel.value = '全部'; try { localStorage.setItem(RD_CAT_KEY, '全部'); } catch (_) {} }
+}
+if ($('#random-cat')) {
+  $('#random-cat').addEventListener('change', (e) => {
+    try { localStorage.setItem(RD_CAT_KEY, e.target.value); } catch (_) {}
+    renderRandom();
+  });
 }
 if ($('#random-refresh')) $('#random-refresh').addEventListener('click', renderRandom);
 
 /* ---------- 星光特效(降载) ---------- */
+let sparklePaused = false;
+document.addEventListener('visibilitychange', () => { sparklePaused = document.hidden; });
 (function sparkles() {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const cv = document.getElementById('sparkles');
   if (!cv || !cv.getContext) return;
   const ctx = cv.getContext('2d');
   let w = cv.width = cv.offsetWidth, h = cv.height = cv.offsetHeight;
-  const n = Math.max(12, Math.min(36, Math.floor(window.innerWidth / 40)));
+  const n = Math.max(8, Math.min(18, Math.floor(window.innerWidth / 70)));
   const stars = Array.from({ length: n }, () => ({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 2 + 0.5, vy: -(Math.random() * 0.5 + 0.15), a: Math.random() * 0.6 + 0.2 }));
   (function tick() {
     ctx.clearRect(0, 0, w, h);
@@ -730,19 +1046,58 @@ function normalize(list) {
       id: v('id', 'i'), title: v('title', 't'), author: v('author', 'a'),
       category: v('category', 'c'), path: v('path', 'p'), ext: v('ext', 'e'),
       size: v('size', 's'), cover: v('cover', 'v') || '', digest: v('digest', 'd') || '',
+      bio: v('bio', 'b') || '',
+      url: b.url || '', zh: b.zh || '', meta: b.meta || '', srcName: b.srcName || '',
+      tags: b.tags || [],
     };
     o.name = b.name || String(o.path || '').split('/').pop();
     return o;
   });
 }
 function applyBooks(list) {
+  __catCount = null; __visCache = { key: '', list: null };
+  setTimeout(() => { try { updateTabCounts(); } catch (_) {} }, 20);
+  setTimeout(() => { try { initRandomCat(); renderRandom(); } catch (_) {} }, 30);
   state.books = normalize(list);
   renderChips();
   renderList();
   renderRandom();
   updateContinueBtn();
 }
-(async function load() {
+/* ---------- 视图切换（书目 / 站点）---------- */
+const VIEW_KEY = 'nav-view';
+function switchView(name) {
+  const books = document.getElementById('view-books');
+  const sites = document.getElementById('view-sites');
+  if (!books || !sites) return;
+  books.hidden = name !== 'books';
+  sites.hidden = name !== 'sites';
+  document.querySelectorAll('#viewTabs .vtab').forEach((b) => {
+    b.classList.toggle('active', b.dataset.view === name);
+  });
+  try { localStorage.setItem(VIEW_KEY, name); } catch (_) {}
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.querySelectorAll('#viewTabs .vtab').forEach((b) => {
+  b.addEventListener('click', () => switchView(b.dataset.view));
+});
+try {
+  const v = localStorage.getItem(VIEW_KEY);
+  if (v === 'sites') switchView('sites');
+} catch (_) {}
+// 标签上的数量
+function updateTabCounts() {
+  const b = document.getElementById('vt-books');
+  const s = document.getElementById('vt-sites');
+  if (b) b.textContent = state.books.length ? state.books.length.toLocaleString() : '…';
+  if (s) {
+    const n = document.querySelectorAll('#sites-list .site-card').length;
+    s.textContent = n ? n : '…';
+  }
+}
+/* 已移除轮询定时器（性能优化）*/
+
+async function boot() {
   // 1) 先用本地缓存立即渲染(秒开)
   let cache = null;
   try { cache = JSON.parse(localStorage.getItem(MKEY) || 'null'); } catch (_) { cache = null; }
@@ -764,6 +1119,9 @@ function applyBooks(list) {
 
   // 3) #read=<id> 深链(分享/刷新)
   loadViewsFile();
+  loadSites();
+  await loadZhMap();
+  loadNarou();
   try {
     const m = location.hash.match(/^#read=(.+)$/);
     if (m) {
@@ -771,11 +1129,10 @@ function applyBooks(list) {
       if (b) setTimeout(() => openReader(b), 120);
     }
   } catch (_) {}
-})();
+}
 
 /* ---------- Service Worker (离线/秒开) ---------- */
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  });
-}
+/* Service Worker 已停用（缓存导致用户看到旧版本）*/
+
+/* 启动 */
+boot();
