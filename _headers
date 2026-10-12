@@ -20,4 +20,4 @@
   Cache-Control: public, max-age=300
 
 /sites.json
-  Cache-Control: public, max-age=300
+  Cache-Control: no-cache, must-revalidate

@@ -1023,3 +1023,7 @@ img { content-visibility: auto; }
 body.dark .nv-tag { background: rgba(60,50,90,.7); color: #c0a8ff; border-color: #4a3f70; }
 body.dark .nv-tag.on { background: rgba(30,70,50,.7); color: #7fe0a8; border-color: #2d5a42; }
 body.dark .nv-tag.done { background: rgba(90,35,65,.7); color: #ff9ecb; border-color: #6b2a4a; }
+
+/* 同人标签（蓝色）*/
+.nv-tag.doujin { background: #e6f0ff; color: #2f6fd0; border-color: #c8dcff; }
+body.dark .nv-tag.doujin { background: rgba(30,55,100,.7); color: #8ec0ff; border-color: #2d4a70; }
