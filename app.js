@@ -8,7 +8,7 @@
 const MANIFEST_URL = 'manifest.json';
 const INDEX_URL = 'search-index.json';
 const PAGE_SIZE = 24;
-const DEFAULT_CATS = ['百合会', '文學區', '輕小說/譯文區', '长佩文学', 'POPO原创市集', 'カクヨム', 'なろう', '晋江文学城', '已消失的百合'];
+const DEFAULT_CATS = ['百合会', '文學區', '輕小說/譯文區', 'LilyVerse', '轻小说百科', '长佩文学', 'POPO原创市集', 'カクヨム', 'なろう', '晋江文学城', '已消失的百合'];
 const SIZES = { s: [0, 500 * 1024], m: [500 * 1024, 2 * 1024 * 1024], l: [2 * 1024 * 1024, Infinity] };
 
 const $ = (s) => document.querySelector(s);
@@ -88,6 +88,8 @@ const URL_RULES = {
   '轻小说/译文区': (n) => 'https://bbs.yamibo.com/thread-' + String(n).replace(/^f/, '') + '-1-1.html',
   '长佩文学': (n) => 'https://www.gongzicp.com/novel-' + String(n).replace(/^gz/, '') + '.html',
   'POPO原创市集': (n) => 'https://www.popo.tw/books/' + String(n).replace(/^pp/, ''),
+  'LilyVerse': (n) => 'https://lilyverse.cc/novels/' + String(n).replace(/^lv-/, ''),
+  '轻小说百科': (n) => 'https://lnovel.org/books-' + String(n).replace(/^ln-/, ''),
 };
 function bookUrl(src, id) {
   const f = URL_RULES[src];
@@ -148,7 +150,7 @@ async function loadNarou() {
       const st = document.getElementById('result-line');
       if (st) st.textContent = '⏳ 正在加载书目数据…';
       try {
-        const PARTS = ["data/part-00.json", "data/part-01.json", "data/part-02.json", "data/part-03.json", "data/part-04.json", "data/part-05.json", "data/part-06.json", "data/part-07.json", "data/part-08.json", "data/part-09.json", "data/part-10.json", "data/part-11.json", "data/part-12.json", "data/part-13.json", "data/part-14.json", "data/part-15.json", "data/part-16.json", "data/part-17.json", "data/part-18.json", "data/part-19.json", "data/part-20.json", "data/part-21.json", "data/part-22.json", "data/part-23.json", "data/part-24.json", "data/part-25.json", "data/part-26.json", "data/part-27.json", "data/part-28.json", "data/part-29.json", "data/part-30.json", "data/part-31.json", "data/part-32.json", "data/part-33.json", "data/part-34.json", "data/part-35.json", "data/part-36.json", "data/part-37.json", "data/part-38.json", "data/part-39.json", "data/part-40.json", "data/part-41.json", "data/part-42.json"];
+        const PARTS = ["data/part-00.json", "data/part-01.json", "data/part-02.json", "data/part-03.json", "data/part-04.json", "data/part-05.json", "data/part-06.json", "data/part-07.json", "data/part-08.json", "data/part-09.json", "data/part-10.json", "data/part-11.json", "data/part-12.json", "data/part-13.json", "data/part-14.json", "data/part-15.json", "data/part-16.json", "data/part-17.json", "data/part-18.json", "data/part-19.json", "data/part-20.json", "data/part-21.json", "data/part-22.json", "data/part-23.json", "data/part-24.json", "data/part-25.json", "data/part-26.json", "data/part-27.json", "data/part-28.json", "data/part-29.json", "data/part-30.json", "data/part-31.json", "data/part-32.json", "data/part-33.json", "data/part-34.json", "data/part-35.json", "data/part-36.json", "data/part-37.json", "data/part-38.json", "data/part-39.json", "data/part-40.json", "data/part-41.json", "data/part-42.json", "data/part-43.json", "data/part-44.json", "data/part-45.json"];
         const results = await Promise.all(PARTS.map(function (f) {
           return fetch(f).then(function (r) { return r.ok ? r.json() : null; })
             .catch(function (e) { return { __err: f + ':' + String((e && e.message) || e).slice(0, 25) }; });

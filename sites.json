@@ -101,6 +101,38 @@
         "vpn": false,
         "yuri": "百合书单",
         "yurl": "https://book.douban.com/tag/%E7%99%BE%E5%90%88"
+      },
+      {
+        "name": "LilyVerse 同频小说",
+        "url": "https://lilyverse.cc/",
+        "desc": "百合小说聚合站 · 收录晋江/泰文百合等",
+        "vpn": false,
+        "yuri": "全部百合",
+        "yurl": "https://lilyverse.cc/novels"
+      },
+      {
+        "name": "Yuristars 百合小说",
+        "url": "https://app.lilyverse.co/",
+        "desc": "华文百合小说平台",
+        "vpn": false,
+        "yuri": "全部百合",
+        "yurl": "https://app.lilyverse.co/"
+      },
+      {
+        "name": "轻小说百科 · 百合文库",
+        "url": "https://lnovel.org/books",
+        "desc": "已完结百合轻小说文库（含日轻翻译）",
+        "vpn": false,
+        "yuri": "百合文库",
+        "yurl": "https://lnovel.org/books?q%5Bgenres_id_eq%5D=20"
+      },
+      {
+        "name": "百合漫",
+        "url": "https://baiheman.com/",
+        "desc": "百合漫画 + 百合小说",
+        "vpn": false,
+        "yuri": "百合小说",
+        "yurl": "https://baiheman.com/novel"
       }
     ]
   },
