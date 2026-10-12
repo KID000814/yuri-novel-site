@@ -69,6 +69,9 @@ function blockPage(country) {
 
 export default {
   async fetch(request, env) {
+    const __u = new URL(request.url);
+
+
     const country = (request.cf && request.cf.country) || '';
 
     if (BLOCKED.has(country)) {
@@ -78,15 +81,11 @@ export default {
           'content-type': 'text/html; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate',
           'x-robots-tag': 'noindex, nofollow',
-          'vary': 'CF-IPCountry',
         },
       });
     }
 
-    // 正常返回静态资源，并告知 CDN 响应随国家变化
-    const res = await env.ASSETS.fetch(request);
-    const headers = new Headers(res.headers);
-    headers.set('vary', 'CF-IPCountry');
-    return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
+    // 正常返回静态资源
+    return env.ASSETS.fetch(request);
   },
 };
