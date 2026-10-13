@@ -75,7 +75,7 @@ export default {
     if (__u.pathname === '/api/fetch') {
       const target = __u.searchParams.get('u');
       if (!target) return new Response('missing ?u=', { status: 400 });
-      const allow = [
+            const allow = [
                      'jjwxc.net', 'gongzicp.com', 'popo.tw',
                      'yamibo.com', 'qidian.com', 'qdmm.com',
                      'zongheng.com', '17k.com', 'tadu.com',
@@ -106,8 +106,21 @@ export default {
                      'spiritfanfics.com', 'nyquil.org', 'novelasligeras.net',
                      'skyatria.com', 'fanfiktion.de', 'efpfanfic.net',
                      'fanfiction-fr.net', 'fikaton.pl', 'cabaca.id',
-                     'storial.co'
+                     'storial.co', 'truyenwiki.com', 'sstruyen.vn',
+                     'truyenvn.vip', 'truyencv.com', 'truyenmoi.com',
+                     'thaionline.net', 'karya.co.id', 'pratilipi.com',
+                     'belletristica.com', 'geschichten-online.de', 'francefanfiction.fr',
+                     'fanfiction.es', 'nyah.com.br', 'fanfictionitalia.net',
+                     'opowiadania.pl', 'kurgusitesi.com', 'riwayat.net',
+                     'hindawi.org', 'fanfiction.gr', 'webnovel.cz',
+                     'prodaman.ru', 'rulate.ru', 'jaomix.ru',
+                     'bookscafe.net', 'knigogid.ru', 'myanimelist.net',
+                     'bookwalker.jp', 'booklive.jp', 'cmoa.jp',
+                     'honto.jp', 'yes24.com', 'aladin.co.kr',
+                     'kyobobook.co.kr', 'weread.qq.com', 'zhihu.com',
+                     'jianshu.com', 'm.webnovel.com'
       ];
+
       let host;
       try { host = new URL(target).hostname.toLowerCase(); } catch (e) { return new Response('bad url', { status: 400 }); }
       if (!allow.some((d) => host === d || host.endsWith('.' + d))) return new Response('host not allowed', { status: 403 });
