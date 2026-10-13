@@ -365,7 +365,28 @@ export default {
                      'meccha-comic.jp',
                      'www.meccha-comic.jp',
                      'manga-bang.com',
-                     'www.manga-bang.com'];
+                     'www.manga-bang.com',
+                     'ficly.com',
+                     'www.ficly.com',
+                     'storymash.com',
+                     'www.storymash.com',
+                     'textnovel.com',
+                     'www.textnovel.com',
+                     'alphanovel.com',
+                     'www.alphanovel.com',
+                     'meganovel.com',
+                     'www.meganovel.com',
+                     'novelstar.com',
+                     'www.novelstar.com',
+                     'ireader.com',
+                     'www.ireader.com',
+                     'yousuu.com',
+                     'www.yousuu.com',
+                     'bookteller.com.cn',
+                     'www.bookteller.com.cn',
+                     'www.dreame.com',
+                     'www.goodnovel.com',
+                     'www.inkitt.com'];
 
       let host;
       try { host = new URL(target).hostname.toLowerCase(); } catch (e) { return new Response('bad url', { status: 400 }); }
