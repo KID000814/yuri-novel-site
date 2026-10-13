@@ -88,6 +88,14 @@ const URL_RULES = {
   '轻小说/译文区': (n) => 'https://bbs.yamibo.com/thread-' + String(n).replace(/^f/, '') + '-1-1.html',
   '长佩文学': (n) => 'https://www.gongzicp.com/novel-' + String(n).replace(/^gz/, '') + '.html',
   'POPO原创市集': (n) => 'https://www.popo.tw/books/' + String(n).replace(/^pp/, ''),
+  // 已消失的百合: 混合 ID（f### = yamibo 论坛, 19位数字 = カクヨム）
+  '已消失的百合': (n) => {
+    const s = String(n);
+    if (/^f\d+$/.test(s)) return 'https://bbs.yamibo.com/thread-' + s.replace(/^f/, '') + '-1-1.html';
+    if (/^\d{15,}$/.test(s)) return 'https://kakuyomu.jp/works/' + s;
+    if (/^\d+$/.test(s)) return 'https://www.yamibo.com/novel/' + s;
+    return '';
+  },
   'LilyVerse': (n) => 'https://lilyverse.cc/novels/' + String(n).replace(/^lv-/, ''),
   '轻小说百科': (n) => 'https://lnovel.org/books-' + String(n).replace(/^ln-/, ''),
   '百合漫': (n) => 'https://baiheman.com/novel/' + String(n).replace(/^bhm-/, ''),
