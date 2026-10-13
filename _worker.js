@@ -75,25 +75,39 @@ export default {
     if (__u.pathname === '/api/fetch') {
       const target = __u.searchParams.get('u');
       if (!target) return new Response('missing ?u=', { status: 400 });
-      const allow = ['archiveofourown.org', 'www.wattpad.com', 'www.inkitt.com', 'tapas.io',
-                     'novelpia.com', 'www.scribblehub.com', 'syosetu.org', 'novelup.plus',
-                     'www.wenku8.net', 'www.linovelib.com', 'www.royalroad.com',
-                     'forum.questionablequesting.com', 'forums.sufficientvelocity.com',
-                     'forums.spacebattles.com', 'neovel.io', 'www.dreame.com',
-                     'www.goodnovel.com', 'www.fanmtl.com', 'www.69shuba.com',
-                     'www.novelhall.com', 'mangadex.org', 'www.mangaupdates.com',
-                     'anilist.co', 'novelupdates.com', 'www.novelupdates.com',
-                     'www.fanfiction.net', 'www.fictionpress.com', 'www.webnovel.com',
-                     'www.novelhall.com', 'book.sfacg.com', 'www.ciweimao.com',
-                     'www.hanmoto.com', 'kakuyomu.jp', 'novel18.syosetu.com',
-                     'yomou.syosetu.com', 'api.syosetu.com', 'www.pixiv.net',
-                     'www.penana.com', 'www.lnnovel.com', 'lnovel.org',
-                     'bbs.yamibo.com', 'www.yamibo.com', 'www.popo.tw',
-                     'www.gongzicp.com', 'www.jjwxc.net', 'www.qidian.com',
-                     'www.qdmm.com', 'www.zongheng.com', 'www.17k.com',
-                     'www.tadu.com', 'www.qimao.com', 'www.zhangyue.com',
-                     'www.ciweimao.com', 'www.sfacg.com', 'www.mkzhan.com',
-                     'www.dmzj.com', 'www.manhuagui.com', 'mangabz.com'];
+      const allow = [
+                     'jjwxc.net', 'gongzicp.com', 'popo.tw',
+                     'yamibo.com', 'qidian.com', 'qdmm.com',
+                     'zongheng.com', '17k.com', 'tadu.com',
+                     'qimao.com', 'zhangyue.com', 'sfacg.com',
+                     'ciweimao.com', 'hanmoto.com', 'linovelib.com',
+                     'wenku8.net', 'douban.com', 'lofter.com',
+                     'weibo.com', 'bilibili.com', '69shuba.com',
+                     'novelhall.com', 'ranobes.net', 'syosetu.com',
+                     'syosetu.org', 'kakuyomu.jp', 'alphapolis.co.jp',
+                     'pixiv.net', 'note.com', 'novelup.plus',
+                     'hameln.com', 'aozora.gr.jp', 'novel18.syosetu.com',
+                     'yomou.syosetu.com', 'novelpia.com', 'joara.com',
+                     'munpia.com', 'novelmania.co.kr', 'ridibooks.com',
+                     'series.naver.com', 'archiveofourown.org', 'fanfiction.net',
+                     'fictionpress.com', 'royalroad.com', 'inkitt.com',
+                     'wattpad.com', 'tapas.io', 'scribblehub.com',
+                     'quotev.com', 'tumblr.com', 'webnovel.com',
+                     'goodnovel.com', 'dreame.com', 'novelupdates.com',
+                     'mangadex.org', 'mangaupdates.com', 'anilist.co',
+                     'bato.to', 'mangago.me', 'fanmtl.com',
+                     'neovel.io', 'spacebattles.com', 'sufficientvelocity.com',
+                     'questionablequesting.com', 'alternatehistory.com', 'author.today',
+                     'litnet.com', 'ficbook.net', 'ranobehub.org',
+                     'ranobelib.me', 'novel.tl', 'readawrite.com',
+                     'dek-d.com', 'noveltoon.com', 'fictionlog.co',
+                     'tunwalai.com', 'truyenfull.vn', 'truyenfull.vision',
+                     'wikidich.com', 'truyenconvert.net', 'metruyenchu.com',
+                     'spiritfanfics.com', 'nyquil.org', 'novelasligeras.net',
+                     'skyatria.com', 'fanfiktion.de', 'efpfanfic.net',
+                     'fanfiction-fr.net', 'fikaton.pl', 'cabaca.id',
+                     'storial.co'
+      ];
       let host;
       try { host = new URL(target).hostname.toLowerCase(); } catch (e) { return new Response('bad url', { status: 400 }); }
       if (!allow.some((d) => host === d || host.endsWith('.' + d))) return new Response('host not allowed', { status: 403 });
