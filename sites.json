@@ -140,6 +140,41 @@
     "desc": "百合资源导航合集（Link3 聚合页）",
     "search": "",
     "vpn": false
+   },
+   {
+    "name": "SF轻小说",
+    "url": "https://www.sfacg.com/",
+    "desc": "国内轻小说站（有百合分类）",
+    "search": "https://www.sfacg.com/search/?q={q}",
+    "vpn": false
+   },
+   {
+    "name": "刺猬猫",
+    "url": "https://www.ciweimao.com/",
+    "desc": "国内二次元向小说站",
+    "search": "https://www.ciweimao.com/search?q={q}",
+    "vpn": false
+   },
+   {
+    "name": "网易云阅读",
+    "url": "https://yuedu.163.com/",
+    "desc": "网易阅读平台",
+    "search": "https://yuedu.163.com/search?q={q}",
+    "vpn": false
+   },
+   {
+    "name": "红薯中文网",
+    "url": "https://www.hongshu.com/",
+    "desc": "中文网络小说站",
+    "search": "",
+    "vpn": false
+   },
+   {
+    "name": "云起书院",
+    "url": "https://yunqi.qq.com/",
+    "desc": "腾讯女频",
+    "search": "",
+    "vpn": false
    }
   ]
  },
@@ -263,6 +298,20 @@
     "url": "https://bookwalker.jp/search/?word=百合",
     "desc": "角川官方电子书店，百合电子书",
     "search": "",
+    "vpn": false
+   },
+   {
+    "name": "ムーンライトノベルズ",
+    "url": "https://moonlight.syosetu.com/",
+    "desc": "なろう 女性向け R18 部门（百合）",
+    "search": "https://moonlight.syosetu.com/search.php?word={q}",
+    "vpn": false
+   },
+   {
+    "name": "ノクターンノベルズ",
+    "url": "https://novel18.syosetu.com/",
+    "desc": "なろう 男性向け R18",
+    "search": "https://novel18.syosetu.com/search.php?word={q}",
     "vpn": false
    }
   ]
@@ -554,6 +603,69 @@
     "desc": "多语创作平台，百合/GL 标签",
     "search": "",
     "vpn": false
+   },
+   {
+    "name": "Teen Ink",
+    "url": "https://www.teenink.com/",
+    "desc": "青少年创作平台",
+    "search": "https://www.teenink.com/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "TapRead",
+    "url": "https://www.tapread.com/",
+    "desc": "英文网络小说（Nuxt）",
+    "search": "https://www.tapread.com/search?keyword={q}",
+    "vpn": true
+   },
+   {
+    "name": "MoboReader",
+    "url": "https://www.moboreader.com/",
+    "desc": "英文小说平台",
+    "search": "https://www.moboreader.com/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "NovelCat",
+    "url": "https://www.novelcat.com/",
+    "desc": "英文小说 App",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Movellas",
+    "url": "https://www.movellas.com/",
+    "desc": "英文青少年创作社区",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "BookRix",
+    "url": "https://www.bookrix.com/",
+    "desc": "德语/英语自出版社区",
+    "search": "https://www.bookrix.com/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "Channillo",
+    "url": "https://www.channillo.com/",
+    "desc": "英文连载订阅平台",
+    "search": "https://www.channillo.com/discover?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "GoodNovel",
+    "url": "https://www.goodnovel.com/",
+    "desc": "英文网络小说平台",
+    "search": "https://www.goodnovel.com/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "Fizzo",
+    "url": "https://www.fizzo.org/",
+    "desc": "印尼/英文小说平台",
+    "search": "https://www.fizzo.org/search?q={q}",
+    "vpn": true
    }
   ]
  },
@@ -881,6 +993,139 @@
     "url": "https://skyatria.com/",
     "desc": "🇪🇸 西语同人站",
     "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Author.Today",
+    "url": "https://author.today/",
+    "desc": "俄语最大自出版平台（фемслэш）",
+    "search": "https://author.today/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "Литнет",
+    "url": "https://www.litnet.com/",
+    "desc": "俄语自出版（юри/фемслэш）",
+    "search": "https://www.litnet.com/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "Ficbook",
+    "url": "https://ficbook.net/",
+    "desc": "俄语最大同人站",
+    "search": "https://ficbook.net/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "Jaomix",
+    "url": "https://www.jaomix.ru/",
+    "desc": "俄语翻译小说站",
+    "search": "https://www.jaomix.ru/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "Bookscafe",
+    "url": "https://www.bookscafe.net/",
+    "desc": "俄语在线书库",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "RanobeHub",
+    "url": "https://ranobehub.org/",
+    "desc": "俄语轻小说站",
+    "search": "https://ranobehub.org/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "Ookbee",
+    "url": "https://www.ookbee.com/",
+    "desc": "🇹🇭 泰国电子书平台",
+    "search": "https://www.ookbee.com/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "Joylada",
+    "url": "https://www.joylada.com/",
+    "desc": "🇹🇭 泰国小说平台",
+    "search": "https://www.joylada.com/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "MebMarket",
+    "url": "https://www.mebmarket.com/",
+    "desc": "🇹🇭 泰国电子书商店",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Abjjad",
+    "url": "https://www.abjjad.com/",
+    "desc": "🇸🇦 阿拉伯语阅读平台",
+    "search": "https://www.abjjad.com/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "Ketabrah",
+    "url": "https://www.ketabrah.ir/",
+    "desc": "🇮🇷 波斯语电子书",
+    "search": "https://www.ketabrah.ir/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "D&R",
+    "url": "https://www.drd.com.tr/",
+    "desc": "🇹🇷 土耳其书店",
+    "search": "https://www.drd.com.tr/arama?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "Idefix",
+    "url": "https://www.idefix.com/",
+    "desc": "🇹🇷 土耳其电商书店",
+    "search": "https://www.idefix.com/arama?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "Fantastyka",
+    "url": "https://www.fantastyka.pl/",
+    "desc": "🇵🇱 波兰科幻/奇幻",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Steimatzky",
+    "url": "https://www.steimatzky.co.il/",
+    "desc": "🇮🇱 希伯来语书店",
+    "search": "https://www.steimatzky.co.il/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "Matrubharti",
+    "url": "https://www.matrubharti.com/",
+    "desc": "🇮🇳 印度多语种创作",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Nojoto",
+    "url": "https://www.nojoto.com/",
+    "desc": "🇮🇳 印度创作社区",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "StoryWeaver",
+    "url": "https://storyweaver.org.in/",
+    "desc": "🇮🇳 印度多语种故事",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "1000kitap",
+    "url": "https://www.1000kitap.com/",
+    "desc": "🇹🇷 土耳其读书社区",
+    "search": "https://www.1000kitap.com/ara?q={q}",
     "vpn": true
    }
   ]
