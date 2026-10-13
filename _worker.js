@@ -77,7 +77,23 @@ export default {
       if (!target) return new Response('missing ?u=', { status: 400 });
       const allow = ['archiveofourown.org', 'www.wattpad.com', 'www.inkitt.com', 'tapas.io',
                      'novelpia.com', 'www.scribblehub.com', 'syosetu.org', 'novelup.plus',
-                     'www.wenku8.net', 'www.linovelib.com', 'www.royalroad.com'];
+                     'www.wenku8.net', 'www.linovelib.com', 'www.royalroad.com',
+                     'forum.questionablequesting.com', 'forums.sufficientvelocity.com',
+                     'forums.spacebattles.com', 'neovel.io', 'www.dreame.com',
+                     'www.goodnovel.com', 'www.fanmtl.com', 'www.69shuba.com',
+                     'www.novelhall.com', 'mangadex.org', 'www.mangaupdates.com',
+                     'anilist.co', 'novelupdates.com', 'www.novelupdates.com',
+                     'www.fanfiction.net', 'www.fictionpress.com', 'www.webnovel.com',
+                     'www.novelhall.com', 'book.sfacg.com', 'www.ciweimao.com',
+                     'www.hanmoto.com', 'kakuyomu.jp', 'novel18.syosetu.com',
+                     'yomou.syosetu.com', 'api.syosetu.com', 'www.pixiv.net',
+                     'www.penana.com', 'www.lnnovel.com', 'lnovel.org',
+                     'bbs.yamibo.com', 'www.yamibo.com', 'www.popo.tw',
+                     'www.gongzicp.com', 'www.jjwxc.net', 'www.qidian.com',
+                     'www.qdmm.com', 'www.zongheng.com', 'www.17k.com',
+                     'www.tadu.com', 'www.qimao.com', 'www.zhangyue.com',
+                     'www.ciweimao.com', 'www.sfacg.com', 'www.mkzhan.com',
+                     'www.dmzj.com', 'www.manhuagui.com', 'mangabz.com'];
       let host;
       try { host = new URL(target).hostname.toLowerCase(); } catch (e) { return new Response('bad url', { status: 400 }); }
       if (!allow.some((d) => host === d || host.endsWith('.' + d))) return new Response('host not allowed', { status: 403 });
