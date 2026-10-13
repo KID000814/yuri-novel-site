@@ -257,6 +257,13 @@
     "vpn": true,
     "yuri": "百合タグ",
     "yurl": "https://note.com/hashtag/%E7%99%BE%E5%90%88"
+   },
+   {
+    "name": "BOOK☆WALKER",
+    "url": "https://bookwalker.jp/search/?word=百合",
+    "desc": "角川官方电子书店，百合电子书",
+    "search": "",
+    "vpn": false
    }
   ]
  },
@@ -533,6 +540,20 @@
     "vpn": true,
     "yuri": "全站百合",
     "yurl": "https://yuricon.com/"
+   },
+   {
+    "name": "Inkitt",
+    "url": "https://www.inkitt.com/genres/lgbtq/lesbian",
+    "desc": "英语自出版平台的 Lesbian 分类",
+    "search": "",
+    "vpn": false
+   },
+   {
+    "name": "Penana",
+    "url": "https://www.penana.com/stories?tag=百合",
+    "desc": "多语创作平台，百合/GL 标签",
+    "search": "",
+    "vpn": false
    }
   ]
  },
@@ -744,6 +765,123 @@
     "vpn": true,
     "yuri": "全站百合",
     "yurl": "https://studioelan.com/"
+   }
+  ]
+ },
+ {
+  "region": "🌏 其它语种（越南语 · 泰语 · 俄语 · 印尼 · 阿拉伯语 · 欧洲各语）",
+  "sites": [
+   {
+    "name": "truyenfull",
+    "url": "https://truyenfull.vn/the-loai/bach-hop/",
+    "desc": "🇻🇳 越南语 bách hợp（百合）专类",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "哔哩轻小说",
+    "url": "https://www.linovelib.com/",
+    "desc": "🇨🇳 日本轻小说中文站（含百合类）",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "ReadAWrite",
+    "url": "https://www.readawrite.com/",
+    "desc": "🇹🇭 泰语小说平台，GirlLove/Yuri 标签",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Dek-D",
+    "url": "https://www.dek-d.com/",
+    "desc": "🇹🇭 泰国最大写作社区",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Литнет (Litnet)",
+    "url": "https://litnet.com/",
+    "desc": "🇷🇺 俄语自出版平台",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "BooksCafe",
+    "url": "https://bookscafe.net/",
+    "desc": "🇷🇺 俄语网络小说站，有 фемслэш 标签",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "ПродаМан",
+    "url": "https://prodaman.ru/",
+    "desc": "🇷🇺 俄语小说平台",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Cabaca",
+    "url": "https://cabaca.id/",
+    "desc": "🇮🇩 印尼语小说平台",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Storial",
+    "url": "https://storial.co/",
+    "desc": "🇮🇩 印尼语写作平台",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Pratilipi",
+    "url": "https://pratilipi.com/",
+    "desc": "🇮🇳 印度多语种创作平台",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Hindawi",
+    "url": "https://www.hindawi.org/",
+    "desc": "🇸🇦 阿拉伯语开放图书",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Opowiadania",
+    "url": "https://opowiadania.pl/",
+    "desc": "🇵🇱 波兰语小说站",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "FanFiktion.de",
+    "url": "https://www.fanfiktion.de/",
+    "desc": "🇩🇪 德语同人站，Femslash 分类",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "EFP Fanfiction",
+    "url": "https://www.efpfanfic.net/",
+    "desc": "🇮🇹 意大利语同人站",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Spirit Fanfics",
+    "url": "https://www.spiritfanfics.com/",
+    "desc": "🇧🇷 葡语同人站",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Skyatria",
+    "url": "https://skyatria.com/",
+    "desc": "🇪🇸 西语同人站",
+    "search": "",
+    "vpn": true
    }
   ]
  },
