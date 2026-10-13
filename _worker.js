@@ -71,6 +71,35 @@ export default {
   async fetch(request, env) {
     const __u = new URL(request.url);
 
+    // ── 临时通用代理（测试 CF 边缘能否直连外国站）──
+    if (__u.pathname === '/api/fetch') {
+      const target = __u.searchParams.get('u');
+      if (!target) return new Response('missing ?u=', { status: 400 });
+      const allow = ['archiveofourown.org', 'www.wattpad.com', 'www.inkitt.com', 'tapas.io',
+                     'novelpia.com', 'www.scribblehub.com', 'syosetu.org', 'novelup.plus',
+                     'www.wenku8.net', 'www.linovelib.com', 'www.royalroad.com'];
+      let host;
+      try { host = new URL(target).hostname.toLowerCase(); } catch (e) { return new Response('bad url', { status: 400 }); }
+      if (!allow.some((d) => host === d || host.endsWith('.' + d))) return new Response('host not allowed', { status: 403 });
+      try {
+        const r = await fetch(target, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,ja;q=0.7',
+            'Cookie': 'view_adult=true',
+          },
+        });
+        const h = new Headers(r.headers);
+        h.set('access-control-allow-origin', '*');
+        h.set('cache-control', 'no-store');
+        h.delete('set-cookie');
+        return new Response(r.body, { status: r.status, headers: h });
+      } catch (e) {
+        return new Response('ERR ' + String((e && e.message) || e), { status: 502 });
+      }
+    }
+
 
     const country = (request.cf && request.cf.country) || '';
 
