@@ -1,4 +1,4 @@
-/* 百合小说分享站 · 静态版
+/* 百合小说导航站 · 静态版
  * 数据来自 manifest.json（构建脚本生成）；全文搜索按需加载 search-index.json。
  * 功能：分类计数 / 分页 / 格式·大小筛选 / 排序 / 封面 / 全文搜索
  */
@@ -8,7 +8,7 @@
 const MANIFEST_URL = 'manifest.json';
 const INDEX_URL = 'search-index.json';
 const PAGE_SIZE = 24;
-const DEFAULT_CATS = ['百合会', '文學區', '輕小說/譯文區', 'pixiv小説', 'アルファポリス', 'Penana', '노벨피아', 'LilyVerse', 'Yuristars', 'note', 'AO3', '轻小说百科', '百合漫', '长佩文学', 'POPO原创市集', 'カクヨム', 'なろう', '晋江文学城', '已消失的百合'];
+const DEFAULT_CATS = ['百合会', '文學區', '輕小說/譯文區', 'pixiv小説', 'AO3', 'カクヨム', 'アルファポリス', 'なろう', 'note', 'ScribbleHub', 'Penana', 'Quotev', 'LilyVerse', 'RoyalRoad', 'BookWalker', 'truyenfull', 'Booksie', '晋江文学城', '노벨피아', '长佩文学', '已消失的百合', '百合漫', '轻小说百科', 'Inkitt', 'POPO原创市集', 'Yuristars', 'Author.Today', 'EFP', 'ムーンライトノベルズ', 'linovelib'];
 const SIZES = { s: [0, 500 * 1024], m: [500 * 1024, 2 * 1024 * 1024], l: [2 * 1024 * 1024, Infinity] };
 
 const $ = (s) => document.querySelector(s);
@@ -175,29 +175,35 @@ async function loadNarou() {
       // 并发拉取分片 + 可见状态
       const st = document.getElementById('result-line');
       if (st) st.textContent = '⏳ 正在加载书目数据…';
-      try {
+try {
         const PARTS = ["data/part-00.json", "data/part-01.json", "data/part-02.json", "data/part-03.json", "data/part-04.json", "data/part-05.json", "data/part-06.json", "data/part-07.json", "data/part-08.json", "data/part-09.json", "data/part-10.json", "data/part-11.json", "data/part-12.json", "data/part-13.json", "data/part-14.json", "data/part-15.json", "data/part-16.json", "data/part-17.json", "data/part-18.json", "data/part-19.json", "data/part-20.json", "data/part-21.json", "data/part-22.json", "data/part-23.json", "data/part-24.json", "data/part-25.json", "data/part-26.json", "data/part-27.json", "data/part-28.json", "data/part-29.json", "data/part-30.json", "data/part-31.json", "data/part-32.json", "data/part-33.json", "data/part-34.json", "data/part-35.json", "data/part-36.json", "data/part-37.json", "data/part-38.json", "data/part-39.json", "data/part-40.json", "data/part-41.json", "data/part-42.json", "data/part-43.json", "data/part-44.json", "data/part-45.json", "data/part-46.json", "data/part-47.json", "data/part-48.json", "data/part-49.json", "data/part-50.json", "data/part-51.json", "data/part-52.json", "data/part-53.json", "data/part-54.json", "data/part-55.json", "data/part-56.json", "data/part-57.json", "data/part-58.json", "data/part-59.json", "data/part-60.json", "data/part-61.json", "data/part-62.json", "data/part-63.json", "data/part-64.json", "data/part-65.json", "data/part-66.json", "data/part-67.json", "data/part-68.json", "data/part-69.json", "data/part-70.json", "data/part-71.json", "data/part-72.json", "data/part-73.json", "data/part-74.json", "data/part-75.json", "data/part-76.json", "data/part-77.json", "data/part-78.json", "data/part-79.json", "data/part-80.json", "data/part-81.json", "data/part-82.json", "data/part-83.json", "data/part-84.json", "data/part-85.json", "data/part-86.json", "data/part-87.json", "data/part-88.json", "data/part-89.json", "data/part-90.json", "data/part-91.json", "data/part-92.json", "data/part-93.json", "data/part-94.json", "data/part-95.json", "data/part-96.json", "data/part-97.json", "data/part-98.json", "data/part-99.json", "data/part-100.json", "data/part-101.json", "data/part-102.json", "data/part-103.json", "data/part-104.json", "data/part-105.json", "data/part-106.json", "data/part-107.json", "data/part-108.json", "data/part-109.json", "data/part-110.json"];
-        const results = await Promise.all(PARTS.map(function (f) {
-          return fetch(f).then(function (r) { return r.ok ? r.json() : null; })
-            .catch(function (e) { return { __err: f + ':' + String((e && e.message) || e).slice(0, 25) }; });
-        }));
+        const FIRST = Math.min(3, PARTS.length);            // ★ 首屏只加载前 3 片（约 500 KB）
+        const chunks = new Array(PARTS.length).fill(null);
         let all = [];
-        const errs = [];
-        let okN = 0;
-        for (const jj of results) {
-          if (!jj) { errs.push('空响应'); continue; }
-          if (jj.__err) { errs.push(jj.__err); continue; }
-          okN++;
-          if (jj.list) all = all.concat(jj.list);
-        }
-        if (all.length) {
-          const seen = Object.create(null);
-          const uniq = [];
-          for (const x of all) { if (!seen[x.n]) { seen[x.n] = 1; uniq.push(x); } }
+        const merge = () => {
+          const seen = Object.create(null), uniq = [];
+          for (const c of chunks) { if (!c) continue; for (const x of c) { if (!seen[x.n]) { seen[x.n] = 1; uniq.push(x); } } }
+          all = uniq;
           applyCatalog(uniq, '共 ' + uniq.length.toLocaleString() + ' 部百合/GL 作品');
-        } else if (st) {
-          st.textContent = '⚠️ 数据加载失败（成功 ' + okN + '/15 片）' + (errs.length ? ' · ' + errs.slice(0, 2).join(' | ') : '');
-        }
+          return uniq.length;
+        };
+        const loadOne = async (i) => {
+          try { const r = await fetch(PARTS[i]); if (!r.ok) return; const j = await r.json();
+                chunks[i] = (j && j.list) ? j.list : []; } catch (_) {}
+        };
+        // ① 首屏：3 片 → 立即渲染
+        await Promise.all(Array.from({ length: FIRST }, (_, i) => loadOne(i)));
+        const n0 = merge();
+        if (st) st.textContent = '⚡ 已显示前 ' + FIRST + ' 片（' + n0.toLocaleString() + ' 部）· 后台继续加载…';
+        // ② 后台：空闲时按顺序加载其余分片，每 8 片刷新一次 UI
+        (async () => {
+          for (let i = FIRST; i < PARTS.length; i++) {
+            await loadOne(i);
+            if (i % 8 === 0) merge();
+          }
+          const nn = merge();
+          if (st) st.textContent = '共 ' + nn.toLocaleString() + ' 部百合/GL 作品';
+        })();
       } catch (e) {
         if (st) st.textContent = '⚠️ 加载异常: ' + String((e && e.message) || e).slice(0, 70);
       }

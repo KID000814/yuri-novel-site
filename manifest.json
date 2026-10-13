@@ -1,0 +1,14 @@
+{
+  "name": "百合小说导航站",
+  "short_name": "百合导航",
+  "description": "180,000+ 部全语种百合小说（Yuri / GL）书目索引 + 139 个全球百合站点",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a0b2e",
+  "theme_color": "#ff6bd6",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "/avatar.jpg", "sizes": "192x192", "type": "image/jpeg" },
+    { "src": "/avatar.jpg", "sizes": "512x512", "type": "image/jpeg" }
+  ]
+}
