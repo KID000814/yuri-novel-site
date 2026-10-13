@@ -1,6 +1,6 @@
 [
  {
-  "region": "🇨🇳 华语 · 原创小说平台",
+  "region": "✍️ 原创小说平台",
   "sites": [
    {
     "name": "晋江文学城",
@@ -84,78 +84,6 @@
     "yuri": "百合文库",
     "yurl": "https://lnovel.org/books?q%5Bgenres_id_eq%5D=20"
    },
-   {
-    "name": "百合漫",
-    "url": "https://baiheman.com/",
-    "desc": "百合漫画 + 百合小说",
-    "vpn": false,
-    "yuri": "百合小说",
-    "yurl": "https://baiheman.com/novel"
-   }
-  ]
- },
- {
-  "region": "🇨🇳 华语 · 阅读 App / 书库",
-  "sites": [
-   {
-    "name": "微信读书",
-    "url": "https://weread.qq.com/",
-    "desc": "会员免费读大量出版书",
-    "search": "https://weread.qq.com/web/search/global?keyword={q}",
-    "vpn": false,
-    "yuri": "百合搜索",
-    "yurl": "https://weread.qq.com/web/search/global?keyword=%E7%99%BE%E5%90%88"
-   },
-   {
-    "name": "QQ阅读",
-    "url": "https://book.qq.com/",
-    "desc": "腾讯旗下 · 有百合/GL 分类",
-    "vpn": false,
-    "yuri": "百合搜索",
-    "yurl": "https://book.qq.com/search?keyword=%E7%99%BE%E5%90%88"
-   },
-   {
-    "name": "豆瓣阅读",
-    "url": "https://read.douban.com/",
-    "desc": "原创作品 · 书评",
-    "search": "https://read.douban.com/search?q={q}",
-    "vpn": false,
-    "yuri": "百合标签",
-    "yurl": "https://read.douban.com/search?q=%E7%99%BE%E5%90%88"
-   },
-   {
-    "name": "豆瓣读书",
-    "url": "https://book.douban.com/",
-    "desc": "书目数据库 · 百合书单",
-    "vpn": false,
-    "yuri": "百合书单",
-    "yurl": "https://book.douban.com/tag/%E7%99%BE%E5%90%88"
-   }
-  ]
- },
- {
-  "region": "🇨🇳 华语 · 社区 / 推荐",
-  "sites": [
-   {
-    "name": "LOFTER",
-    "url": "https://www.lofter.com/",
-    "desc": "网易同人社区 · 百合二创量最大",
-    "vpn": false,
-    "yuri": "百合标签",
-    "yurl": "https://www.lofter.com/tag/%E7%99%BE%E5%90%88"
-   },
-   {
-    "name": "冷清言语",
-    "url": "https://link3.cc/yuriacg",
-    "desc": "百合资源导航合集（Link3 聚合页）",
-    "search": "",
-    "vpn": false
-   }
-  ]
- },
- {
-  "region": "🇯🇵 日本 · 免费 Web 小说",
-  "sites": [
    {
     "name": "小説家になろう",
     "url": "https://yomou.syosetu.com/",
@@ -249,42 +177,7 @@
     "desc": "🇯🇵 なろう 女性向け部门（百合 · 263 个作品链接已验证）",
     "search": "https://moonlight.syosetu.com/search.php?word={q}",
     "vpn": false
-   }
-  ]
- },
- {
-  "region": "🇯🇵 日本 · 商业出版 / 书城",
-  "sites": [
-   {
-    "name": "BOOK☆WALKER",
-    "url": "https://bookwalker.jp/",
-    "desc": "正版电子书（含百合姬系）",
-    "search": "https://bookwalker.jp/search/?word={q}",
-    "vpn": true,
-    "yuri": "百合検索",
-    "yurl": "https://bookwalker.jp/search/?word=%E7%99%BE%E5%90%88"
    },
-   {
-    "name": "青空文庫",
-    "url": "https://www.aozora.gr.jp/",
-    "desc": "公有领域文学（完全合法免费）",
-    "search": "",
-    "vpn": false,
-    "yuri": "公有领域文学"
-   },
-   {
-    "name": "百合ナビ",
-    "url": "https://yurinavi.com/",
-    "desc": "日本百合资讯站 · 新刊/动画/活动",
-    "vpn": true,
-    "yuri": "全站百合资讯",
-    "yurl": "https://yurinavi.com/"
-   }
-  ]
- },
- {
-  "region": "🇰🇷 韩国 · 백합 / GL",
-  "sites": [
    {
     "name": "문피아 (Munpia)",
     "url": "https://www.munpia.com/",
@@ -365,12 +258,7 @@
     "url": "https://brunch.co.kr/",
     "desc": "韩国写作平台 · 个人连载",
     "vpn": true
-   }
-  ]
- },
- {
-  "region": "🌍 英文 · 原创平台",
-  "sites": [
+   },
    {
     "name": "Scribble Hub",
     "url": "https://www.scribblehub.com/",
@@ -413,11 +301,117 @@
     "url": "https://www.quotev.com/",
     "desc": "英文青少年同人/原创站",
     "vpn": true
+   },
+   {
+    "name": "truyenfull",
+    "url": "https://truyenfull.vn/the-loai/bach-hop/",
+    "desc": "🇻🇳 越南语 bách hợp（百合）专类",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "哔哩轻小说",
+    "url": "https://www.linovelib.com/",
+    "desc": "🇨🇳 日本轻小说中文站（含百合类）",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Литнет (Litnet)",
+    "url": "https://litnet.com/",
+    "desc": "🇷🇺 俄语自出版平台",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "BooksCafe",
+    "url": "https://bookscafe.net/",
+    "desc": "🇷🇺 俄语网络小说站，有 фемслэш 标签",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "ПродаМан",
+    "url": "https://prodaman.ru/",
+    "desc": "🇷🇺 俄语小说平台",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Author.Today",
+    "url": "https://author.today/",
+    "desc": "🇷🇺 俄语最大自出版（фемслэш · 已收 125 部）",
+    "search": "https://author.today/search?q={q}",
+    "vpn": true
+   },
+   {
+    "name": "Opowiadania",
+    "url": "https://opowiadania.pl/",
+    "desc": "🇵🇱 波兰语小说站",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Skyatria",
+    "url": "https://skyatria.com/",
+    "desc": "🇪🇸 西语同人站",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "ReadAWrite",
+    "url": "https://www.readawrite.com/",
+    "desc": "🇹🇭 泰语小说平台，GirlLove/Yuri 标签",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Dek-D",
+    "url": "https://www.dek-d.com/",
+    "desc": "🇹🇭 泰国最大写作社区",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Cabaca",
+    "url": "https://cabaca.id/",
+    "desc": "🇮🇩 印尼语小说平台",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Storial",
+    "url": "https://storial.co/",
+    "desc": "🇮🇩 印尼语写作平台",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Pratilipi",
+    "url": "https://pratilipi.com/",
+    "desc": "🇮🇳 印度多语种创作平台",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Hindawi",
+    "url": "https://www.hindawi.org/",
+    "desc": "🇸🇦 阿拉伯语开放图书",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "百合漫",
+    "url": "https://baiheman.com/",
+    "desc": "百合漫画 + 百合小说",
+    "vpn": false,
+    "yuri": "百合小说",
+    "yurl": "https://baiheman.com/novel"
    }
   ]
  },
  {
-  "region": "🌍 英文 · 同人站",
+  "region": "🎭 同人创作站",
   "sites": [
    {
     "name": "Archive of Our Own",
@@ -445,12 +439,92 @@
     "url": "https://forums.sufficientvelocity.com/",
     "desc": "英文同人论坛 · 有 yuri 连载",
     "vpn": true
+   },
+   {
+    "name": "FanFiktion.de",
+    "url": "https://www.fanfiktion.de/",
+    "desc": "🇩🇪 德语同人站，Femslash 分类",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "EFP Fanfiction",
+    "url": "https://www.efpfanfic.net/",
+    "desc": "🇮🇹 意大利语同人站",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "Spirit Fanfics",
+    "url": "https://www.spiritfanfics.com/",
+    "desc": "🇧🇷 葡语同人站",
+    "search": "",
+    "vpn": true
+   },
+   {
+    "name": "LOFTER",
+    "url": "https://www.lofter.com/",
+    "desc": "网易同人社区 · 百合二创量最大",
+    "vpn": false,
+    "yuri": "百合标签",
+    "yurl": "https://www.lofter.com/tag/%E7%99%BE%E5%90%88"
    }
   ]
  },
  {
-  "region": "🌍 英文 · 官方出版 / 书店",
+  "region": "📖 阅读 App / 电子书城",
   "sites": [
+   {
+    "name": "微信读书",
+    "url": "https://weread.qq.com/",
+    "desc": "会员免费读大量出版书",
+    "search": "https://weread.qq.com/web/search/global?keyword={q}",
+    "vpn": false,
+    "yuri": "百合搜索",
+    "yurl": "https://weread.qq.com/web/search/global?keyword=%E7%99%BE%E5%90%88"
+   },
+   {
+    "name": "QQ阅读",
+    "url": "https://book.qq.com/",
+    "desc": "腾讯旗下 · 有百合/GL 分类",
+    "vpn": false,
+    "yuri": "百合搜索",
+    "yurl": "https://book.qq.com/search?keyword=%E7%99%BE%E5%90%88"
+   },
+   {
+    "name": "豆瓣阅读",
+    "url": "https://read.douban.com/",
+    "desc": "原创作品 · 书评",
+    "search": "https://read.douban.com/search?q={q}",
+    "vpn": false,
+    "yuri": "百合标签",
+    "yurl": "https://read.douban.com/search?q=%E7%99%BE%E5%90%88"
+   },
+   {
+    "name": "豆瓣读书",
+    "url": "https://book.douban.com/",
+    "desc": "书目数据库 · 百合书单",
+    "vpn": false,
+    "yuri": "百合书单",
+    "yurl": "https://book.douban.com/tag/%E7%99%BE%E5%90%88"
+   },
+   {
+    "name": "BOOK☆WALKER",
+    "url": "https://bookwalker.jp/",
+    "desc": "正版电子书（含百合姬系）",
+    "search": "https://bookwalker.jp/search/?word={q}",
+    "vpn": true,
+    "yuri": "百合検索",
+    "yurl": "https://bookwalker.jp/search/?word=%E7%99%BE%E5%90%88"
+   },
+   {
+    "name": "青空文庫",
+    "url": "https://www.aozora.gr.jp/",
+    "desc": "公有领域文学（完全合法免费）",
+    "search": "",
+    "vpn": false,
+    "yuri": "公有领域文学"
+   },
    {
     "name": "J-Novel Club",
     "url": "https://j-novel.club/",
@@ -524,50 +598,6 @@
     "vpn": true,
     "yuri": "yuri 搜索",
     "yurl": "https://www.amazon.com/s?k=yuri+novel&i=digital-text"
-   }
-  ]
- },
- {
-  "region": "🌍 英文 · 书评 / 资讯站",
-  "sites": [
-   {
-    "name": "Novel Updates",
-    "url": "https://www.novelupdates.com/",
-    "desc": "日韩中小说英译索引站",
-    "search": "https://www.novelupdates.com/?s={q}",
-    "vpn": true
-   },
-   {
-    "name": "Okazu",
-    "url": "https://okazu.yuricon.com/",
-    "desc": "2002 年至今的百合书评博客 · 最权威",
-    "vpn": true,
-    "yuri": "全站百合评论",
-    "yurl": "https://okazu.yuricon.com/"
-   },
-   {
-    "name": "Anime-Planet",
-    "url": "https://www.anime-planet.com/",
-    "desc": "动漫数据库 · GL 标签",
-    "vpn": true,
-    "yuri": "GL 标签",
-    "yurl": "https://www.anime-planet.com/anime/tags/girls-love"
-   },
-   {
-    "name": "Goodreads",
-    "url": "https://www.goodreads.com/",
-    "desc": "世界最大书目数据库 · 百合书单",
-    "vpn": true,
-    "yuri": "yuri 书单",
-    "yurl": "https://www.goodreads.com/search?q=yuri"
-   },
-   {
-    "name": "Yuricon",
-    "url": "https://yuricon.com/",
-    "desc": "百合文化组织 · 资料/活动",
-    "vpn": true,
-    "yuri": "全站百合",
-    "yurl": "https://yuricon.com/"
    },
    {
     "name": "Tapas",
@@ -583,150 +613,6 @@
     "url": "https://www.webnovel.com/",
     "desc": "英文网文平台 · 含 GL",
     "search": "https://www.webnovel.com/search?keywords={q}",
-    "vpn": true
-   }
-  ]
- },
- {
-  "region": "🌏 越南语",
-  "sites": [
-   {
-    "name": "truyenfull",
-    "url": "https://truyenfull.vn/the-loai/bach-hop/",
-    "desc": "🇻🇳 越南语 bách hợp（百合）专类",
-    "search": "",
-    "vpn": true
-   },
-   {
-    "name": "哔哩轻小说",
-    "url": "https://www.linovelib.com/",
-    "desc": "🇨🇳 日本轻小说中文站（含百合类）",
-    "search": "",
-    "vpn": true
-   }
-  ]
- },
- {
-  "region": "🌏 俄语",
-  "sites": [
-   {
-    "name": "Литнет (Litnet)",
-    "url": "https://litnet.com/",
-    "desc": "🇷🇺 俄语自出版平台",
-    "search": "",
-    "vpn": true
-   },
-   {
-    "name": "BooksCafe",
-    "url": "https://bookscafe.net/",
-    "desc": "🇷🇺 俄语网络小说站，有 фемслэш 标签",
-    "search": "",
-    "vpn": true
-   },
-   {
-    "name": "ПродаМан",
-    "url": "https://prodaman.ru/",
-    "desc": "🇷🇺 俄语小说平台",
-    "search": "",
-    "vpn": true
-   },
-   {
-    "name": "Author.Today",
-    "url": "https://author.today/",
-    "desc": "🇷🇺 俄语最大自出版（фемслэш · 已收 125 部）",
-    "search": "https://author.today/search?q={q}",
-    "vpn": true
-   }
-  ]
- },
- {
-  "region": "🌏 欧洲各语 · 德 / 意 / 葡 / 波 / 西",
-  "sites": [
-   {
-    "name": "FanFiktion.de",
-    "url": "https://www.fanfiktion.de/",
-    "desc": "🇩🇪 德语同人站，Femslash 分类",
-    "search": "",
-    "vpn": true
-   },
-   {
-    "name": "EFP Fanfiction",
-    "url": "https://www.efpfanfic.net/",
-    "desc": "🇮🇹 意大利语同人站",
-    "search": "",
-    "vpn": true
-   },
-   {
-    "name": "Spirit Fanfics",
-    "url": "https://www.spiritfanfics.com/",
-    "desc": "🇧🇷 葡语同人站",
-    "search": "",
-    "vpn": true
-   },
-   {
-    "name": "Opowiadania",
-    "url": "https://opowiadania.pl/",
-    "desc": "🇵🇱 波兰语小说站",
-    "search": "",
-    "vpn": true
-   },
-   {
-    "name": "Skyatria",
-    "url": "https://skyatria.com/",
-    "desc": "🇪🇸 西语同人站",
-    "search": "",
-    "vpn": true
-   }
-  ]
- },
- {
-  "region": "🌏 泰语 / 印尼语 / 印度语",
-  "sites": [
-   {
-    "name": "ReadAWrite",
-    "url": "https://www.readawrite.com/",
-    "desc": "🇹🇭 泰语小说平台，GirlLove/Yuri 标签",
-    "search": "",
-    "vpn": true
-   },
-   {
-    "name": "Dek-D",
-    "url": "https://www.dek-d.com/",
-    "desc": "🇹🇭 泰国最大写作社区",
-    "search": "",
-    "vpn": true
-   },
-   {
-    "name": "Cabaca",
-    "url": "https://cabaca.id/",
-    "desc": "🇮🇩 印尼语小说平台",
-    "search": "",
-    "vpn": true
-   },
-   {
-    "name": "Storial",
-    "url": "https://storial.co/",
-    "desc": "🇮🇩 印尼语写作平台",
-    "search": "",
-    "vpn": true
-   },
-   {
-    "name": "Pratilipi",
-    "url": "https://pratilipi.com/",
-    "desc": "🇮🇳 印度多语种创作平台",
-    "search": "",
-    "vpn": true
-   }
-  ]
- },
- {
-  "region": "🌏 阿拉伯语 / 波斯语 / 希伯来语",
-  "sites": [
-   {
-    "name": "Hindawi",
-    "url": "https://www.hindawi.org/",
-    "desc": "🇸🇦 阿拉伯语开放图书",
-    "search": "",
     "vpn": true
    }
   ]
@@ -1059,7 +945,7 @@
   ]
  },
  {
-  "region": "📊 百合作品数据库（名录最全）",
+  "region": "📊 数据库 / 书评 / 资讯",
   "sites": [
    {
     "name": "Bangumi 番组计划",
@@ -1090,6 +976,14 @@
     "vpn": true
    },
    {
+    "name": "VNDB 视觉小说数据库",
+    "url": "https://vndb.org/",
+    "desc": "视觉小说库·可按百合/GL 标签筛",
+    "vpn": true,
+    "yuri": "Girls Love 标签",
+    "yurl": "https://vndb.org/g140"
+   },
+   {
     "name": "Yuri Wiki (Fandom)",
     "url": "https://yuri.fandom.com/",
     "desc": "百合百科 · 作品名录",
@@ -1098,12 +992,63 @@
     "yurl": "https://yuri.fandom.com/"
    },
    {
-    "name": "VNDB 视觉小说数据库",
-    "url": "https://vndb.org/",
-    "desc": "视觉小说库·可按百合/GL 标签筛",
+    "name": "Novel Updates",
+    "url": "https://www.novelupdates.com/",
+    "desc": "日韩中小说英译索引站",
+    "search": "https://www.novelupdates.com/?s={q}",
+    "vpn": true
+   },
+   {
+    "name": "Okazu",
+    "url": "https://okazu.yuricon.com/",
+    "desc": "2002 年至今的百合书评博客 · 最权威",
     "vpn": true,
-    "yuri": "Girls Love 标签",
-    "yurl": "https://vndb.org/g140"
+    "yuri": "全站百合评论",
+    "yurl": "https://okazu.yuricon.com/"
+   },
+   {
+    "name": "Anime-Planet",
+    "url": "https://www.anime-planet.com/",
+    "desc": "动漫数据库 · GL 标签",
+    "vpn": true,
+    "yuri": "GL 标签",
+    "yurl": "https://www.anime-planet.com/anime/tags/girls-love"
+   },
+   {
+    "name": "Goodreads",
+    "url": "https://www.goodreads.com/",
+    "desc": "世界最大书目数据库 · 百合书单",
+    "vpn": true,
+    "yuri": "yuri 书单",
+    "yurl": "https://www.goodreads.com/search?q=yuri"
+   },
+   {
+    "name": "Yuricon",
+    "url": "https://yuricon.com/",
+    "desc": "百合文化组织 · 资料/活动",
+    "vpn": true,
+    "yuri": "全站百合",
+    "yurl": "https://yuricon.com/"
+   },
+   {
+    "name": "百合ナビ",
+    "url": "https://yurinavi.com/",
+    "desc": "日本百合资讯站 · 新刊/动画/活动",
+    "vpn": true,
+    "yuri": "全站百合资讯",
+    "yurl": "https://yurinavi.com/"
+   }
+  ]
+ },
+ {
+  "region": "🧭 推荐 / 导航整合",
+  "sites": [
+   {
+    "name": "冷清言语",
+    "url": "https://link3.cc/yuriacg",
+    "desc": "百合资源导航合集（Link3 聚合页）",
+    "search": "",
+    "vpn": false
    }
   ]
  }
