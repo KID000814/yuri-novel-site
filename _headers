@@ -21,3 +21,26 @@
 
 /sites.json
   Cache-Control: no-cache, must-revalidate
+
+# ★ 数据分片：长缓存（访客只下载一次 ✗）
+/data/*
+  Cache-Control: public, max-age=604800, immutable
+
+# ★ 静态资源：中缓存（版本号变化即失效 ✗）
+/app.js
+  Cache-Control: public, max-age=86400
+
+/style.css
+  Cache-Control: public, max-age=86400
+
+/avatar.jpg
+  Cache-Control: public, max-age=604800
+
+/avatar.svg
+  Cache-Control: public, max-age=604800
+
+/sites.json
+  Cache-Control: public, max-age=86400
+
+/manifest.json
+  Cache-Control: public, max-age=86400
