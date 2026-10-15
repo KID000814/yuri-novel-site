@@ -1,4 +1,9 @@
-# 页面和脚本不缓存（避免用户看到旧版本）
+# ══════════════════════════════════════════════
+# 百合小说导航站 · 缓存策略
+# 目标：让访客的重复访问几乎零请求
+# ══════════════════════════════════════════════
+
+# ── 页面：不缓存（保证看到最新版）──
 /
   Cache-Control: no-cache, must-revalidate
 
@@ -8,39 +13,27 @@
 /sw.js
   Cache-Control: no-cache, must-revalidate
 
-# 带版本号?的静态资源可以长缓存
-/app.js
-  Cache-Control: public, max-age=300
-
-/style.css
-  Cache-Control: public, max-age=300
-
-# 数据文件短缓存
-/catalog.json
-  Cache-Control: public, max-age=300
-
-/sites.json
-  Cache-Control: no-cache, must-revalidate
-
-# ★ 数据分片：长缓存（访客只下载一次 ✗）
+# ── 数据分片：长缓存 7 天 ──
+# 分片内容只在重新抓取时变化，日常访客无需重复下载
 /data/*
   Cache-Control: public, max-age=604800, immutable
 
-# ★ 静态资源：中缓存（版本号变化即失效 ✗）
+# ── 静态资源：缓存 1 天（URL 带 ?v= 版本号）──
 /app.js
   Cache-Control: public, max-age=86400
 
 /style.css
   Cache-Control: public, max-age=86400
-
-/avatar.jpg
-  Cache-Control: public, max-age=604800
-
-/avatar.svg
-  Cache-Control: public, max-age=604800
 
 /sites.json
   Cache-Control: public, max-age=86400
 
 /manifest.json
   Cache-Control: public, max-age=86400
+
+# ── 图片：缓存 7 天 ──
+/avatar.jpg
+  Cache-Control: public, max-age=604800
+
+/avatar.svg
+  Cache-Control: public, max-age=604800
