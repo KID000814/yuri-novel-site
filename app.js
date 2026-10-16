@@ -8,7 +8,7 @@
 const MANIFEST_URL = 'manifest.json';
 const INDEX_URL = 'search-index.json';
 const PAGE_SIZE = 24;
-const DEFAULT_CATS = ['百合会', '文學區', '輕小說/譯文區', 'pixiv小説', 'AO3', 'カクヨム', 'アルファポリス', 'なろう', 'note', 'ScribbleHub', 'Penana', 'Quotev', 'LilyVerse', 'RoyalRoad', 'BookWalker', 'truyenfull', 'Booksie', '晋江文学城', '노벨피아', '长佩文学', '已消失的百合', '百合漫', '轻小说百科', 'Inkitt', 'POPO原创市集', 'Yuristars', 'Author.Today', 'EFP', 'ムーンライトノベルズ', 'linovelib'];
+const DEFAULT_CATS = ['女同文学（策展）', '百合会', '文學區', '輕小說/譯文區', 'pixiv小説', 'AO3', 'カクヨム', 'アルファポリス', 'なろう', 'note', 'ScribbleHub', 'Penana', 'Quotev', 'LilyVerse', 'RoyalRoad', 'BookWalker', 'truyenfull', 'Booksie', '晋江文学城', '노벨피아', '长佩文学', '已消失的百合', '百合漫', '轻小说百科', 'Inkitt', 'POPO原创市集', 'Yuristars', 'Author.Today', 'EFP', 'ムーンライトノベルズ', 'linovelib'];
 const SIZES = { s: [0, 500 * 1024], m: [500 * 1024, 2 * 1024 * 1024], l: [2 * 1024 * 1024, Infinity] };
 
 const $ = (s) => document.querySelector(s);
@@ -115,6 +115,7 @@ const URL_RULES = {
   'pixiv小説': (n) => 'https://www.pixiv.net/novel/show.php?id=' + String(n).replace(/^px-/, ''),
   '노벨피아': (n) => 'https://novelpia.com/novel/' + String(n).replace(/^np-/, ''),
   'Penana': (n) => 'https://www.penana.com/story/' + String(n).replace(/^pen-/, ''),
+  '女同文学（策展）': (n) => 'https://www.google.com/search?q=' + encodeURIComponent(String(n || '').replace(/^lit-/, '')) + '+lesbian+novel',
   'Project Gutenberg': (n) => 'https://www.gutenberg.org/ebooks/' + String(n).replace(/^pg-/, ''),
   'Open Library': (n) => 'https://openlibrary.org/works/' + String(n).replace(/^ol-/, ''),
   'Sapphic Books': (n) => 'https://sapphicbooks.com/',
