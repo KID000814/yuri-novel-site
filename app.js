@@ -12,7 +12,7 @@ const DEFAULT_CATS = ['百合会', '文學區', '輕小說/譯文區', 'pixiv小
 const SIZES = { s: [0, 500 * 1024], m: [500 * 1024, 2 * 1024 * 1024], l: [2 * 1024 * 1024, Infinity] };
 
 const $ = (s) => document.querySelector(s);
-const state = { books: [], index: null, indexLoading: false, cat: '全部', q: '', ext: '', size: '', sort: 'title', page: 1 };
+const state = { books: [], index: null, indexLoading: false, cat: '全部', lang: '全部', q: '', ext: '', size: '', sort: 'title', page: 1 };
 
 /* ---------- 小工具 ---------- */
 function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
@@ -148,6 +148,7 @@ function mapNarou(list) {
       srcName: '在' + src + '阅读',
       zh: x.z || x.zh || ZH_MAP[ncode] || ZH_MAP[ncode.toUpperCase()] || '',
       tags: Array.isArray(x.g) ? x.g : [],
+      lang: x.lang || '',
       meta: len > 0 ? len.toLocaleString() + ' 字' : '',
     };
   }).filter((b) => b.title && b.url);
@@ -308,12 +309,33 @@ function renderChips() {
       chips.appendChild(b);
     });
   }
+  // ★ 语种筛选 ✗
+  const langBox = $('#langChips');
+  if (langBox) {
+    langBox.innerHTML = '';
+    const langCount = {};
+    state.books.forEach((b) => { const L = b.lang || ''; if (L) langCount[L] = (langCount[L] || 0) + 1; });
+    const langs = Object.keys(langCount).sort((a, b) => langCount[b] - langCount[a]);
+    if (langs.length) {
+      const all = el('button', 'chip chip-parent' + (state.lang === '全部' ? ' active' : ''));
+      all.innerHTML = `🌏 全部语种<span class="chip-count">${state.books.length}</span>`;
+      all.addEventListener('click', () => { state.lang = '全部'; state.page = 1; renderList(); });
+      langBox.appendChild(all);
+      langs.forEach((L) => {
+        const b = el('button', 'chip chip-lang' + (L === state.lang ? ' active' : ''));
+        b.innerHTML = `${escapeHtml(L)}<span class="chip-count">${langCount[L]}</span>`;
+        b.addEventListener('click', () => { state.lang = L; state.page = 1; renderList(); });
+        langBox.appendChild(b);
+      });
+    }
+  }
 }
 
 
 /* ---------- 筛选 ---------- */
 function visible() {
   let l = state.books.slice();
+  if (state.lang && state.lang !== '全部') l = l.filter((b) => (b.lang || '') === state.lang);
   if (state.cat !== '全部') l = l.filter((b) => b.category === state.cat);
   if (state.ext) l = l.filter((b) => b.ext === state.ext);
   if (state.size && SIZES[state.size]) { const [lo, hi] = SIZES[state.size]; l = l.filter((b) => b.size >= lo && b.size < hi); }

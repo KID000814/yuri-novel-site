@@ -1027,3 +1027,17 @@ body.dark .nv-tag.done { background: rgba(90,35,65,.7); color: #ff9ecb; border-c
 /* 同人标签（蓝色）*/
 .nv-tag.doujin { background: #e6f0ff; color: #2f6fd0; border-color: #c8dcff; }
 body.dark .nv-tag.doujin { background: rgba(30,55,100,.7); color: #8ec0ff; border-color: #2d4a70; }
+
+
+/* ★ 语种筛选条 ✗ */
+.chips-lang { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,107,214,.22); }
+.chip-lang {
+  background: linear-gradient(135deg, rgba(56,189,248,.16), rgba(139,92,246,.16));
+  border-color: rgba(56,189,248,.34);
+}
+.chip-lang:hover { border-color: rgba(56,189,248,.62); }
+.chip-lang.active {
+  background: linear-gradient(135deg, #38bdf8, #8b5cf6);
+  border-color: transparent; color: #fff;
+  box-shadow: 0 4px 16px rgba(56,189,248,.4);
+}
