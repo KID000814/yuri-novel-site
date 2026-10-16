@@ -13,10 +13,9 @@
 /sw.js
   Cache-Control: no-cache, must-revalidate
 
-# ── 数据分片：长缓存 7 天 ──
-# 分片内容只在重新抓取时变化，日常访客无需重复下载
+# ── 数据分片：不缓存（保证新数据立即生效 ✗）──
 /data/*
-  Cache-Control: public, max-age=604800, immutable
+  Cache-Control: no-cache, must-revalidate
 
 # ── 静态资源：缓存 1 天（URL 带 ?v= 版本号）──
 /app.js
