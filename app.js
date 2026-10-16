@@ -1112,6 +1112,7 @@ function normalize(list) {
       bio: v('bio', 'b') || '',
       url: b.url || '', zh: b.zh || '', meta: b.meta || '', srcName: b.srcName || '',
       tags: b.tags || [],
+        lang: b.lang || '',
     };
     o.name = b.name || String(o.path || '').split('/').pop();
     return o;
